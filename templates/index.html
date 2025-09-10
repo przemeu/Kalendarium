@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block title %}Wybierz Filtry{% endblock %}
+
+{% block content %}
+<!-- Centered Filter Section -->
+<div class="centered-filter-container">
+    <h1>Wybierz Filtry</h1>
+    <form action="/results" method="get">
+        <div class="form-group">
+            <label for="season">Sezon:</label>
+            <select name="season" id="season">
+                <option value="">-- Wybierz Sezon --</option>
+                {% for season in seasons %}
+                    <option value="{{ season['Sezon'] }}">{{ season['Sezon'] }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+<div class="form-group">
+    <label for="opponent">Przeciwnik:</label>
+    <select name="opponent" id="opponent">
+        <option value="">-- Wybierz Przeciwnika --</option>
+        {% for opponent in opponents %}
+            <option value="{{ opponent['Przeciwnik'] }}">{{ opponent['Przeciwnik'] }}</option>
+        {% endfor %}
+    </select>
+</div>
+
+        <div class="form-group">
+            <label for="league">Liga:</label>
+            <select name="league" id="league">
+                <option value="">-- Wybierz Ligę --</option>
+                {% for league in leagues %}
+                    <option value="{{ league['Liga'] }}">{{ league['Liga'] }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="wynik">Wynik:</label>
+            <select name="wynik" id="wynik">
+                <option value="">-- Wybierz Wynik --</option>
+                <option value="Wygrana">Wygrana</option>
+                <option value="Remis">Remis</option>
+                <option value="Porażka">Porażka</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="scorer">Strzelec:</label>
+            <input type="text" name="scorer" id="scorer" placeholder="Wpisz nazwisko" value="{{ request.args.get('scorer', '') }}">
+        </div>
+        <div class="form-group">
+            <label for="place">Miejsce:</label>
+            <select name="place" id="place">
+                <option value="">-- Wybierz Miejsce --</option>
+                {% for place in places %}
+                    <option value="{{ place['Miejsce'] }}" style="color: #003c74;">{{ place['Miejsce'] }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+
+
+<div class="form-group">
+    <label for="from_date">Od (yyyy/mm):</label>
+    <input type="text" name="from_date" id="from_date" placeholder="2017/05" value="{{ request.args.get('from_date', '') }}">
+</div>
+<div class="form-group">
+    <label for="to_date">Do (yyyy/mm):</label>
+    <input type="text" name="to_date" id="to_date" placeholder="2024/12" value="{{ request.args.get('to_date', '') }}">
+</div>
+<div class="form-group">
+    <label for="date">Dzień w roku (dd.mm):</label>
+    <input type="text" name="date" id="date" placeholder="dd.mm" 
+           value="{{ request.args.get('date', '') }}" 
+           pattern="\d{2}\.\d{2}" 
+           title="Enter a date in the format dd.mm">
+</div>
+
+        <button type="submit">Pokaż Wyniki</button>
+    </form>
+</div>
+
+{% endblock %}

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wyniki</title>
+</head>
+<body>
+    <h1>Wyniki</h1>
+    <a href="/">Wróć</a>
+    
+    <h2>Filtry:</h2>
+    <ul>
+        {% if season %}<li>Sezon: {{ season }}</li>{% endif %}
+        {% if opponent %}<li>Przeciwnik: {{ opponent }}</li>{% endif %}
+        {% if league %}<li>Liga: {{ league }}</li>{% endif %}
+        {% if place %}<li>Miejsce: {{ place }}</li>{% endif %}
+        {% if date %}<li>Data: {{ date }}</li>{% endif %}
+    </ul>
+
+    {% if matches %}
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Data</th>
+                <th>Kolejka</th>
+                <th>Rok</th>
+                <th>Liga</th>
+                <th>Miejsce</th>
+                <th>Przeciwnik</th>
+                <th>Wynik</th>
+                <th>Strzelcy</th>
+                <th>Frekwencja</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for match in matches %}
+            <tr>
+                <td>{{ match['Data'] }}</td>
+                <td>{{ match['Kolejka'] }}</td>
+                <td>{{ match['Rok'] }}</td>
+                <td>{{ match['Liga'] }}</td>
+                <td>{{ match['Miejsce'] }}</td>
+                <td>{{ match['Przeciwnik'] }}</td>
+                <td>{{ match['Wynik'] }}</td>
+                <td>{{ match['Strzelcy'] }}</td>
+                <td>{{ match['Frekwencja'] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+        <p>No matches found for the selected filters.</p>
+    {% endif %}
+</body>
+</html>

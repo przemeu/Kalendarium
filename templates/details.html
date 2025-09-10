@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+
+{% block title %}Szczegóły Meczu{% endblock %}
+
+{% block content %}
+<div class="details-container">
+    <!-- Back Button -->
+    <div class="back-button-container" style="margin-bottom: 20px;">
+        <button onclick="history.back()" class="back-button">
+            ← Powrót
+        </button>
+    </div>
+    
+    <div class="header-section">
+        <div class="header-content">
+            <!-- Left Logo -->
+            <div class="team-logo">
+                {% if match['Miejsce'] == 'Dom' %}
+                <img src="https://arka.gdynia.pl/files/herb/arka_gdynia_mzks_kolor.png" alt="Arka Gdynia Logo">
+                {% endif %}
+                <!-- For away games, left side shows opponent logo (if available), but we don't have opponent logos -->
+            </div>
+    
+        <!-- Match Details -->
+        <div class="match-details">
+            <p>
+                {{ match['Full date'] }}<br>
+            </p>
+            <h1 class="match-title">
+                {% if match['Miejsce'] == 'Dom' %}
+                Arka Gdynia - {{ match['Przeciwnik'] }}
+                {% else %}
+                {{ match['Przeciwnik'] }} - Arka Gdynia
+                {% endif %}
+            </h1>
+            <p class="score">{{ match['display_score'] }}</p>
+        </div>
+    
+            <!-- Right Logo -->
+            <div class="team-logo">
+                {% if match['Miejsce'] == 'Dom' %}
+                <!-- For home games, right side would show opponent logo (if available), but we don't have opponent logos -->
+                {% else %}
+                <img src="https://arka.gdynia.pl/files/herb/arka_gdynia_mzks_kolor.png" alt="Arka Gdynia Logo">
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+
+    <!-- Match Info Section -->
+        <div class="match-info">
+            <h2>Informacje</h2>
+            <table>
+                <tr><th>Sezon</th><td>{{ match['Sezon'] }}</td></tr>
+                {% if match['Kolejka'] not in ['PL', 'PP', 'PE', 'B'] %}
+                
+                <tr><th>Kolejka</th><td>{{ match['Kolejka'] }}</td></tr>
+                {% endif %}
+                <tr><th>Przeciwnik</th><td>{{ match['Przeciwnik'] }}</td></tr>
+                {% if match['Frekwencja'] %}
+                <tr><th>Frekwencja</th><td>{{ match['Frekwencja'] | int }}</td></tr>
+                {% endif %}
+                {% if match['sedzia'] %}
+                <tr><th>Sędzia</th><td>{{ match['sedzia'] }}</td></tr>
+                {% endif %}
+            </table>
+        </div>
+    
+
+    <!-- Scorers and Opponent Goals Section -->
+   <!-- Scorers and Opponent Goals Section -->
+<div class="scorers-section">
+    <h2>Gole</h2>
+    <table class="lineup-table">
+        <thead>
+            <tr>
+                {% if match['Miejsce'] == 'Dom' %}
+                <th>Arka Gdynia</th>
+                <th>{{ match['Przeciwnik'] }}</th>
+                {% else %}
+                <th>{{ match['Przeciwnik'] }}</th>
+                <th>Arka Gdynia</th>
+                {% endif %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for i in range(match['max_length_scorers']) %}
+            <tr>
+                <td>{{ match['scorers'][i] if i < match['scorers']|length else '' }}</td>
+                <td>{{ match['opponent_goals'][i] if i < match['opponent_goals']|length else '' }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Lineups Section -->
+<div class="lineups">
+    <h2>Składy</h2>
+    <table class="lineup-table">
+        <thead>
+            <tr>
+                {% if match['Miejsce'] == 'Dom' %}
+                <th>Arka Gdynia</th>
+                <th>{{ match['Przeciwnik'] }}</th>
+                {% else %}
+                <th>{{ match['Przeciwnik'] }}</th>
+                <th>Arka Gdynia</th>
+                {% endif %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for i in range(match['max_length_lineups']) %}
+            <tr>
+                <td>{{ match['arka_players'][i] if i < match['arka_players']|length else '' }}</td>
+                <td>{{ match['opponent_players'][i] if i < match['opponent_players']|length else '' }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+
+{% endblock %}

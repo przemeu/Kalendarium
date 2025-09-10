@@ -1,0 +1,369 @@
+{% extends "base.html" %}
+
+{% block title %}Wyniki{% endblock %}
+
+{% block content %}
+<div class="results-page-container">
+    <div class="content-wrapper">
+        <!-- Filter and Analysis Section -->
+        <div class="filter-analysis-container">
+            <!-- Filter Section -->
+            <div class="filter-bar">
+                <form action="/results" method="get">
+                    <select name="season">
+                        <option value="">Sezon</option>
+                        {% for season in seasons %}
+                        <option value="{{ season['Sezon'] }}" {% if season['Sezon'] == request.args.get('season') %}selected{% endif %}>
+                            {{ season['Sezon'] }}
+                        </option>
+                        {% endfor %}
+                    </select>
+
+                    <select name="opponent">
+                        <option value="">Przeciwnik</option>
+                        {% for opponent in opponents %}
+                        <option value="{{ opponent['Przeciwnik'] }}" {% if opponent['Przeciwnik'] == request.args.get('opponent') %}selected{% endif %}>
+                            {{ opponent['Przeciwnik'] }}
+                        </option>
+                        {% endfor %}
+                    </select>
+
+                    <select name="league">
+                        <option value="">Liga</option>
+                        {% for league in leagues %}
+                        <option value="{{ league['Liga'] }}" {% if league['Liga'] == request.args.get('league') %}selected{% endif %}>
+                            {{ league['Liga'] }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                    <select name="wynik">
+                        <option value="">Wynik</option>
+                        <option value="Wygrana" {% if request.args.get('wynik') == 'Wygrana' %}selected{% endif %}>Wygrana</option>
+                        <option value="Remis" {% if request.args.get('wynik') == 'Remis' %}selected{% endif %}>Remis</option>
+                        <option value="Porażka" {% if request.args.get('wynik') == 'Porażka' %}selected{% endif %}>Porażka</option>
+                    </select>
+                    
+                    <select name="place">
+                        <option value="">Miejsce</option>
+                        {% for place in places %}
+                        <option value="{{ place['Miejsce'] }}" {% if place['Miejsce'] == request.args.get('place') %}selected{% endif %}>
+                            {{ place['Miejsce'] }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                    
+                    <select name="referee">
+                        <option value="" {% if not request.args.get('referee') or request.args.get('referee') == 'None' or request.args.get('referee') == '' %}selected{% endif %}>Sędzia</option>
+                        {% for referee in referees %}
+                        {% if referee['sedzia'] and referee['sedzia'] != 'None' and referee['sedzia'] != '' %}
+                        <option value="{{ referee['sedzia'] }}" {% if referee['sedzia'] == request.args.get('referee') and request.args.get('referee') not in ['', 'None', None] %}selected{% endif %}>
+                            {{ referee['sedzia'] }}
+                        </option>
+                        {% endif %}
+                        {% endfor %}
+                    </select>
+                    
+                    <input 
+        type="text" 
+        name="scorer" 
+        placeholder="Strzelec" 
+        value="{{ request.args.get('scorer', '') }}">
+    
+
+                    <input type="text" name="date" placeholder="Dzień w roku - np. 09.07" value="{{ request.args.get('date', '') if request.args.get('date', '') != 'None' else '' }}">
+                    <input type="text" name="from_date" id="from_date" placeholder="Data od - np. 2017/05" value="{{ request.args.get('from_date', '') }}">
+                    <input type="text" name="to_date" id="to_date" placeholder="Data do - np. 2025/01" value="{{ request.args.get('to_date', '') }}">
+
+                    <button type="submit">Filtruj</button>
+                </form>
+                
+                <!-- Clear filters button as separate link -->
+                <a href="/results" class="clear-filters-btn" style="display: inline-block; text-decoration: none; margin-top: 10px;">Usuń filtry</a>
+            </div>
+
+            <!-- Analysis Section -->
+            <div class="analysis-container">
+                
+                {% if num_matches > 0 %}
+                <div class="analysis-item">
+                    <h3>Liczba Meczów</h3>
+                    <p>
+                        Łącznie: {{ num_matches }}<br>
+                        Domowe: {{ home_matches }}<br>
+                        Wyjazdowe: {{ away_matches }}
+                    </p>
+                </div>
+                {% endif %}
+                {% if num_wins > 0 or num_draws > 0 or num_losses > 0 %}
+
+                <div class="analysis-item">
+                    <h3>Wyniki</h3>
+                    <p>
+                        Wygrane: {{ num_wins }}<br>
+                        Remisy: {{ num_draws }}<br>
+                        Porażki: {{ num_losses }}
+                    </p>
+                </div>
+                {% endif %}
+
+                {% if num_matches > 0 and (num_wins > 0 or num_draws > 0 or num_losses > 0) %}
+                <div class="analysis-item">
+                    <h3>Wyniki Procentowo</h3>
+                    <p>
+                        Wygrane: {{ ('%.2f' % ((num_wins / num_matches) * 100)) }}%<br>
+                        Remisy: {{ ('%.2f' % ((num_draws / num_matches) * 100)) }}%<br>
+                        Porażki: {{ ('%.2f' % ((num_losses / num_matches) * 100)) }}%
+                    </p>
+                </div>
+                {% endif %}
+       
+                {% if total_first_digits > 0 or total_second_digits > 0 %}
+                <div class="analysis-item">
+                    <h3>Bilans Bramkowy</h3>
+                    <p>
+                        Łącznie: {{ total_first_digits }} : {{ total_second_digits }}<br>
+                        Domowe: {{ home_goals }} : {{ home_goals_conceded }}<br>
+                        Wyjazdowe: {{ away_goals }} : {{ away_goals_conceded }}
+                    </p>
+                </div>
+                {% endif %}
+                
+            
+                {% if home_wins or away_wins or home_draws or away_draws or home_losses or away_losses %}
+                <div class="analysis-item wyniki-container">
+                    <h3>Wyniki Domowe vs Wyjazdowe</h3>
+                    <div class="wyniki-content">
+                        <div class="wyniki-left">
+                            Wygrane: {{ home_wins }}<br>
+                            Remisy: {{ home_draws }}<br>
+                            Porażki: {{ home_losses }}
+                        </div>
+                        <div class="wyniki-right">
+                            Wygrane: {{ away_wins }}<br>
+                            Remisy: {{ away_draws }}<br>
+                            Porażki: {{ away_losses }}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+
+                {% if highest_attendance_home or highest_attendance_away %}
+                <div class="analysis-item">
+                    <h3>Najlepsza Frekwencja</h3>
+                    <p>
+                        {% if highest_attendance_home %}
+                        U siebie: {{ highest_attendance_home }} ({{ highest_attendance_home_year }})<br>
+                        {% endif %}
+                        {% if highest_attendance_away %}
+                        Na wyjeździe: {{ highest_attendance_away }} ({{ highest_attendance_away_year }})
+                        {% endif %}
+                    </p>
+                </div>
+                {% endif %}
+            
+                {% if top_scorers and top_scorers|length > 0 and not (top_scorers[0][0] == "" and top_scorers[0][1] == "") %}
+                <div class="analysis-item">
+                    <h3>Najlepszy strzelec</h3>
+                    <p>
+                        Łącznie: {% for scorer, goals in top_scorers %}
+                            {{ scorer }} - {{ goals }}<br>
+                        {% endfor %}
+                        {% if home_top_scorer %}
+                        Domowe: {{ home_top_scorer[0] }} - {{ home_top_scorer[1] }}<br>
+                        {% endif %}
+                        {% if away_top_scorer %}
+                        Wyjazdowe: {{ away_top_scorer[0] }} - {{ away_top_scorer[1] }}
+                        {% endif %}
+                    </p>
+                </div>
+                {% endif %}
+            
+                {% if num_matches > 0 %}
+<div class="analysis-item">
+    <h3>Średnia Bramek</h3>
+    <p>
+        Strzelone: {{ ('%.2f' % (total_first_digits / num_matches)) }}<br>
+        Stracone: {{ ('%.2f' % (total_second_digits / num_matches)) }}
+    </p>
+</div>
+{% endif %}
+
+{% if num_matches > 0 and (home_clean_sheets > 0 or away_clean_sheets > 0) %}
+<div class="analysis-item">
+    <h3>Czyste Konto</h3>
+    <p>
+        Łącznie: {{ clean_sheet_count }} ({{ ('%.2f' % ((clean_sheet_count / num_matches) * 100)) }}%)<br>
+        {% if home_matches > 0 %}
+        Domowe: {{ home_clean_sheets }} ({{ ('%.2f' % ((home_clean_sheets / home_matches) * 100)) }}%)<br>
+        {% endif %}
+        {% if away_matches > 0 %}
+        Wyjazdowe: {{ away_clean_sheets }} ({{ ('%.2f' % ((away_clean_sheets / away_matches) * 100)) }}%)
+        {% endif %}
+    </p>
+</div>
+{% endif %}
+                {% if longest_streak > 0 %}
+                <div class="analysis-item">
+                    <h3>Seria wygranych</h3>
+                    <p>
+                        {{ longest_streak }}<br>
+                        Od: {{ longest_streak_start_date }}<br>
+                        Do: {{ longest_streak_end_date }}
+                    </p>
+                </div>
+                {% endif %}
+            
+                {% if longest_unbeaten_streak > 0 %}
+                <div class="analysis-item">
+                    <h3>Seria bez porażki</h3>
+                    <p>
+                        {{ longest_unbeaten_streak }}<br>
+                        Od: {{ longest_unbeaten_start_date }}<br>
+                        Do: {{ longest_unbeaten_end_date }}
+                    </p>
+                </div>
+                {% endif %}
+
+                {% if scoring_streak > 0 %}
+                <div class="analysis-item">
+                    <h3>Seria z bramką strzeloną</h3>
+                    <p>
+                        {{ scoring_streak }}<br>
+                        Od: {{ longest_scoring_streak_start_date }}<br>
+                        Do: {{ longest_scoring_streak_end_date }}
+                    </p>
+                </div>
+                {% endif %}
+            
+                {% if clean_sheet_streak > 0 %}
+                <div class="analysis-item">
+                    <h3>Seria meczów z czystym kontem</h3>
+                    <p>
+                        {{ clean_sheet_streak }}<br>
+                        Od: {{ longest_clean_sheet_streak_start_date }} <br>
+                        Do: {{ longest_clean_sheet_streak_end_date }}
+                    </p>
+                </div>
+                {% endif %}
+            
+                {% if winless_streak > 0 %}
+                <div class="analysis-item">
+                    <h3>Seria bez zwycięstwa</h3>
+                    <p>
+                        {{ winless_streak }}<br>
+                        Od: {{ longest_winless_streak_start_date }} <br>
+                        Do: {{ longest_winless_streak_end_date }}
+                    </p>
+                </div>
+                {% endif %}
+                
+                {% if longest_no_clean_sheet_streak > 0 %}
+                <div class="analysis-item">
+                    <h3>Seria meczów bez czystego konta</h3>
+                    <p>
+                        {{ longest_no_clean_sheet_streak }}<br>
+                        Od: {{ longest_no_clean_sheet_streak_start_date }}<br>
+                        Do: {{ longest_no_clean_sheet_streak_end_date }}
+                    </p>
+                </div>
+                {% endif %}
+                
+            </div>
+        </div>
+
+        <!-- Menu Bar Section -->
+        <div class="menu-bar">
+            <ul>
+                <li><a href="/">Strona Główna</a></li>
+                <li><a href="/results">Wszystkie mecze</a></li>
+                <li><a href="/export_all_xls">Eksportuj Wszystko</a></li>
+                <li><a href="https://bilety.arka.gdynia.pl/login" target="_blank">Kup bilet</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- Results Table -->
+<div class="results-table">
+    <table>
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Sezon</th>
+                <th>Kolejka</th>
+                <th>Data</th>
+                <th>Rok</th>
+                <th>Liga</th>
+                <th>Miejsce</th>
+                <th>Przeciwnik</th>
+                <th>Wynik</th>
+                {% if column_visibility.get('Strzelcy', True) %}
+                <th>Strzelcy</th>
+                {% endif %}
+                {% if column_visibility.get('Frekwencja', True) %}
+                <th>Frekwencja</th>
+                {% endif %}
+                {% if column_visibility.get('Sedzia', True) %}
+                <th>Sędzia</th>
+                {% endif %}
+                <th>Szczegóły</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for match in matches %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td><a href="/results?season={{ match['Sezon'] }}">{{ match['Sezon'] }}</a></td>
+                <td><a href="/results?kolejka={{ match['Kolejka'] }}">{{ match['Kolejka'] }}</a></td>
+                <td><a href="/results?date={{ match['Data'] }}">{{ match['Data'] }}</a></td>
+                <td><a href="/results?rok={{ match['Rok'] }}">{{ match['Rok'] }}</a></td>
+                <td><a href="/results?league={{ match['Liga'] }}">{{ match['Liga'] }}</a></td>
+                <td><a href="/results?place={{ match['Miejsce'] }}">{{ match['Miejsce'] }}</a></td>
+                <td><a href="/results?opponent={{ match['Przeciwnik'] }}">{{ match['Przeciwnik'] }}</a></td>
+                <td><a href="/results?result={{ match['Wynik'] }}">{{ match['Wynik'] }}</a></td>
+                {% if column_visibility.get('Strzelcy', True) %}
+                <td>{{ match['Strzelcy'] }}</td>
+                {% endif %}
+                {% if column_visibility.get('Frekwencja', True) %}
+                <td>
+                    {% if match['Frekwencja'] %}
+                        {{ match['Frekwencja'] | int }}
+                    {% else %}
+                        &nbsp;
+                    {% endif %}
+                </td>
+                {% endif %}
+                {% if column_visibility.get('Sedzia', True) %}
+                <td>{{ match['sedzia'] if match['sedzia'] else '' }}</td>
+                {% endif %}
+                <td style="text-align: center;">
+                    <!-- Button linking to match details -->
+                    <a href="/details/{{ match['Id'] }}" class="details-button"></a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<form action="/export_xls" method="get">
+    <input type="hidden" name="season" value="{{ current_filters.get('season', '') }}">
+    <input type="hidden" name="opponent" value="{{ current_filters.get('opponent', '') }}">
+    <input type="hidden" name="league" value="{{ current_filters.get('league', '') }}">
+    <input type="hidden" name="place" value="{{ current_filters.get('place', '') }}">
+    <input type="hidden" name="date" value="{{ current_filters.get('date', '') }}">
+    <input type="hidden" name="from_date" value="{{ current_filters.get('from_date', '') }}">
+    <input type="hidden" name="to_date" value="{{ current_filters.get('to_date', '') }}">
+    <input type="hidden" name="wynik" value="{{ current_filters.get('wynik', '') }}">
+    <input type="hidden" name="scorer" value="{{ current_filters.get('scorer', '') }}">
+    <input type="hidden" name="kolejka" value="{{ current_filters.get('kolejka', '') }}">
+    <input type="hidden" name="rok" value="{{ current_filters.get('rok', '') }}">
+    <input type="hidden" name="result" value="{{ current_filters.get('result', '') }}">
+    <input type="hidden" name="referee" value="{{ current_filters.get('referee', '') }}">
+    <button type="submit">Eksportuj do XLS</button>
+</form>
+<br>
+
+
+{% endblock %}

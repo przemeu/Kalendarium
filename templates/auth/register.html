@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block title %}Register - Arka Gdynia Kalendarium{% endblock %}
+
+{% block content %}
+<div style="max-width: 450px; margin: 40px auto; padding: 30px; background: white; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+    <h2 style="text-align: center; color: #333; margin-bottom: 30px; font-size: 28px;">Create Account</h2>
+    
+    <form method="POST" novalidate>
+        {{ form.hidden_tag() }}
+        
+        <div style="margin-bottom: 20px;">
+            {{ form.email.label(style="display: block; margin-bottom: 8px; font-weight: bold; color: #555;") }}
+            {{ form.email(style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 6px; font-size: 16px; transition: border-color 0.3s;") }}
+            {% if form.email.errors %}
+                <div style="color: #d32f2f; font-size: 14px; margin-top: 5px;">
+                    {% for error in form.email.errors %}
+                        <div>{{ error }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+        
+        <div style="margin-bottom: 20px;">
+            {{ form.password.label(style="display: block; margin-bottom: 8px; font-weight: bold; color: #555;") }}
+            {{ form.password(style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 6px; font-size: 16px; transition: border-color 0.3s;") }}
+            {% if form.password.errors %}
+                <div style="color: #d32f2f; font-size: 14px; margin-top: 5px;">
+                    {% for error in form.password.errors %}
+                        <div>{{ error }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            <div style="font-size: 12px; color: #666; margin-top: 5px;">
+                Password must be at least 8 characters long and contain uppercase, lowercase, digit, and special character.
+            </div>
+        </div>
+        
+        <div style="margin-bottom: 20px;">
+            {{ form.password2.label(style="display: block; margin-bottom: 8px; font-weight: bold; color: #555;") }}
+            {{ form.password2(style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 6px; font-size: 16px; transition: border-color 0.3s;") }}
+            {% if form.password2.errors %}
+                <div style="color: #d32f2f; font-size: 14px; margin-top: 5px;">
+                    {% for error in form.password2.errors %}
+                        <div>{{ error }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+        
+        <div style="margin-bottom: 20px;">
+            {{ form.submit(style="width: 100%; padding: 14px; background: linear-gradient(90deg, #f5c000, #d4a017); border: none; border-radius: 6px; color: white; font-size: 16px; font-weight: bold; cursor: pointer; transition: transform 0.2s;") }}
+        </div>
+    </form>
+    
+    <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee;">
+        <p style="margin: 0 0 10px 0; color: #666;">Already have an account?</p>
+        <a href="{{ url_for('login') }}" style="color: #d4a017; text-decoration: none; font-weight: bold; padding: 8px 16px; border: 2px solid #d4a017; border-radius: 4px; transition: all 0.3s;">Sign In</a>
+    </div>
+    
+    <div style="background: #f8f9fa; padding: 15px; border-radius: 6px; margin-top: 20px; border: 1px solid #e9ecef;">
+        <h4 style="margin: 0 0 10px 0; color: #495057; font-size: 16px;">🔒 Security Features</h4>
+        <ul style="margin: 0; padding-left: 20px; color: #6c757d; font-size: 14px;">
+            <li>Passwords are securely hashed with bcrypt</li>
+            <li>Email confirmation required</li>
+            <li>Account lockout after failed attempts</li>
+            <li>CSRF protection enabled</li>
+        </ul>
+    </div>
+</div>
+
+<style>
+input[type="email"]:focus,
+input[type="password"]:focus {
+    outline: none;
+    border-color: #d4a017 !important;
+}
+
+input[type="submit"]:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(212, 160, 23, 0.3);
+}
+
+a:hover {
+    background-color: #d4a017 !important;
+    color: white !important;
+}
+</style>
+{% endblock %}

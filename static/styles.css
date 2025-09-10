@@ -1,0 +1,1135 @@
+/* CSS Variables for Light and Dark Mode */
+:root {
+    /* Light mode colors */
+    --bg-primary: #f4f4f4;
+    --bg-secondary: white;
+    --text-primary: #333;
+    --text-secondary: #666;
+    --text-gold: #d4a017;
+    --border-light: #f0f0f0;
+    --border-medium: #f5f5f5;
+    --shadow-light: rgba(0, 0, 0, 0.1);
+    --shadow-medium: rgba(0, 0, 0, 0.15);
+    
+    /* Blue and Gold gradients stay the same */
+    --blue-primary: #003c74;
+    --blue-secondary: #0059a8;
+    --gold-primary: #f5c000;
+    --gold-secondary: #d4a017;
+    --blue-gradient: linear-gradient(135deg, #003c74, #0059a8);
+    --gold-gradient: linear-gradient(90deg, #f5c000, #d4a017);
+}
+
+/* Dark mode colors */
+[data-theme="dark"] {
+    --bg-primary: #000811; /* Very dark blue primary for main background */
+    --bg-secondary: #002244; /* Dark blue secondary */
+    --text-primary: #d4a017; /* Gold text as requested */
+    --text-secondary: #cccccc;
+    --text-gold: #f5c000;
+    --border-light: #003366; /* Dark blue borders */
+    --border-medium: #004488; /* Medium blue borders */
+    --shadow-light: rgba(0, 60, 116, 0.3); /* Blue-tinted shadows */
+    --shadow-medium: rgba(0, 60, 116, 0.5);
+}
+
+/* General reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    padding: 20px;
+    font-size: 16px;
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+h1, h2 {
+    color: var(--blue-primary); /* Arka Gdynia blue */
+    transition: color 0.15s ease;
+}
+/* Full-width Filter Section */
+.centered-filter-container {
+    width: 100%;
+    max-width: 1200px; /* Restrict max-width for better readability on large screens */
+    margin: 0 auto; /* Center the container */
+    padding: 20px;
+    box-sizing: border-box; /* Include padding in total width/height */
+    background-color: linear-gradient(90deg, #003c74, #0059a8); /* Make it visually distinct */
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.centered-filter-container form {
+    display: flex;
+    flex-wrap: wrap; /* Allow elements to wrap on smaller screens */
+    justify-content: space-between;
+    gap: 15px; /* Space between form elements */
+}
+
+.centered-filter-container .form-group {
+    flex: 1 1 calc(33.333% - 20px); /* 3 items per row, adjust spacing */
+    min-width: 250px; /* Prevent elements from shrinking too much */
+    margin-bottom: 10px;
+}
+
+.centered-filter-container .form-group label {
+    font-weight: bold;
+    font-size: 14px;
+    margin-bottom: 5px;
+    color: #003c74;
+}
+
+.centered-filter-container .form-group select,
+.centered-filter-container .form-group input {
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+    border: none;
+    border-radius: 4px;
+}
+
+.centered-filter-container button {
+    align-self: flex-end; /* Align button to the end */
+    background: linear-gradient(90deg, #003c74, #0059a8);
+    color: gold;
+    border: none;
+    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: bold;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .centered-filter-container form {
+        flex-direction: column; /* Stack elements vertically on small screens */
+    }
+
+    .centered-filter-container .form-group {
+        flex: 1 1 100%; /* Full width on small screens */
+    }
+
+    .centered-filter-container button {
+        align-self: center; /* Center button */
+    }
+}
+
+.centered-filter-container form {
+    width: 100%; /* Stretch form to full width */
+    max-width: none; /* Remove any limits */
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    margin: 10px 0;
+    width: 100%;
+    padding: 0 10px; /* Add spacing on small screens */
+    box-sizing: border-box;
+}
+
+.form-group label {
+    margin-bottom: 5px;
+    font-size: 16px;
+    font-weight: bold;
+    color: sandybrown;
+}
+
+.form-group select,
+.form-group input {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: none;
+    border-radius: 4px;
+}
+
+button {
+    width: auto;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    background: linear-gradient(90deg, #003c74, #0059a8);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 10px;
+    align-self: flex-start; /* Keep button aligned to start */
+}
+
+
+/* Header and Navigation Bar */
+header.navbar {
+    display: flex;
+
+        border-radius: 10px; /* Adjust value as needed */
+    justify-content: space-between; /* Moves buttons to the right */
+    align-items: center;
+    background: linear-gradient(90deg, #003c74, #0059a8);
+    padding: 5px 20px; /* Keep a small amount of padding */
+}
+
+.logo-container {
+    display: flex; /* Use Flexbox for horizontal alignment */
+    justify-content: center; /* Center the logos horizontally */
+    align-items: center; /* Align logos vertically */
+    gap: 20px; /* Space between the two images */
+    width: 100%; /* Ensure the container spans full width */
+    padding: 20px 0;
+}
+
+.logo-container .herb img,
+.logo-container .new-logo img {
+    max-height: 120px; /* Ensure both images have the same height */
+    width: auto; /* Maintain aspect ratio */
+    object-fit: contain; /* Prevent image distortion */
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    align-items: center; /* Align navigation items vertically */
+    margin: 0;
+}
+
+nav ul li {
+    margin-left: 15px; /* Space between navigation items */
+}
+
+nav ul li a {
+    color: 003c74;
+    text-decoration: none;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 0.9rem; /* Adjust font size for compact header */
+}
+
+nav ul li a:hover {
+    color: #f5c000; /* Gold color for hover effect */
+    
+    
+}
+
+/* Hero section */
+.hero {
+    background: linear-gradient(90deg, #f5c000, #d4a017);
+    color: gold;
+    text-align: center;
+    padding: 30px; /* Adjusted for smaller visual impact */
+    margin-bottom: 30px;
+}
+
+.hero h1 {
+    font-size: 2rem; /* Slightly smaller font size */
+    margin-bottom: 20px;
+}
+
+
+
+button {
+    background: linear-gradient(90deg, #003c74, #0059a8);
+    color: gold;
+    padding: 12px 20px;
+    font-size: 1.1rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 100%;
+    transition: background-color 0.15s;
+}
+
+
+
+/* Filters section */
+.filters {
+    background-color: var(--bg-secondary);
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px var(--shadow-light);
+    transition: background-color 0.15s ease;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.filters h2 {
+    margin-bottom: 20px;
+}
+
+.filters ul {
+    list-style: none;
+}
+
+.filters ul li {
+    margin-bottom: 10px;
+}
+
+table {
+    width: 100%;
+    margin: 20px 0;
+    border-collapse: collapse;
+    border-radius: 8px; /* Overall rounding */
+    overflow: hidden; /* Ensures corners are respected */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Optional shadow for consistency */
+}
+
+/* Modern Results Table - Perfect Fit Design */
+.results-table {
+    background: var(--bg-secondary);
+    border-radius: 12px;
+    box-shadow: 0 4px 20px var(--shadow-light);
+    margin: 20px 0;
+    transition: background-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.results-table table {
+    width: 100%;
+    table-layout: fixed; /* Fixed layout to respect our width constraints */
+    border-collapse: separate;
+    border-spacing: 0;
+}
+/* WYNIKI FILTRU*/
+table th, table td {
+    padding: 12px;
+    text-align: left;
+    border: none;
+}
+
+table th {
+    background: linear-gradient(90deg, #003c74, #0059a8);
+    color: gold;
+}
+
+table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+table tr:hover {
+    background-color: #f5c000;
+    color: #003c74; /* Dark blue text color on hover */
+}
+
+table td a {
+    color: #003c74; /* Dark Blue */
+    text-decoration: none; /* Remove underline */
+    transition: color 0.15s ease; /* Smooth transition */
+    text-align: right;
+}
+
+table td a:hover {
+    font-weight: bold;
+}
+
+/* Rounded Corners for Specific Columns */
+table th:first-child {
+    border-top-left-radius: 8px; /* Top-left corner */
+}
+
+table th:last-child {
+    border-top-right-radius: 8px; /* Top-right corner */
+}
+
+table tr:last-child td:first-child {
+    border-bottom-left-radius: 8px; /* Bottom-left corner */
+}
+
+table tr:last-child td:last-child {
+    border-bottom-right-radius: 8px; /* Bottom-right corner */
+}
+
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+    header.navbar {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    nav ul {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    nav ul li {
+        margin-left: 0;
+        margin-bottom: 10px;
+    }
+
+    .hero h1 {
+        font-size: 1.8rem; /* Adjusted for smaller screens */
+    }
+
+    .form-section {
+        padding: 20px;
+    }
+}
+
+/* Filter Bar Styling */
+.filter-bar {
+    display: flex;
+    flex-direction: column; /* Stack the filters vertically */
+    gap: 10px; /* Space between filters */
+    width: 16.66%; /* Take 1/6 of the page width */
+    min-width: 150px; /* Ensure it doesn't become too narrow on small screens */
+    margin-right: 20px; /* Space from the main content */
+    padding: 10px;
+    background-color: var(--bg-secondary);
+    border: none;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px var(--shadow-light);
+    transition: background-color 0.15s ease;
+}
+
+/* Filters inside the filter bar */
+.filter-bar select, 
+.filter-bar input {
+    padding: 5px;
+    font-size: 14px;
+    border: none;
+    border-radius: 4px;
+    width: 100%; /* Full width within the filter bar */
+    box-sizing: border-box;
+}
+
+.filter-bar button {
+    font-size: 14px;
+    border: none;
+    border-radius: 4px;
+    width: 100%; /* Full width within the filter bar */
+    box-sizing: border-box;
+    padding: 10px 20px;
+    font-weight: bold;
+    background: linear-gradient(90deg, #003c74, #0059a8);
+    color: gold;
+    cursor: pointer;
+}
+
+.filter-bar button:hover {
+    background: gold; /* Gold background on hover */
+    color: #003c74; /* Dark blue text color on hover */
+}
+
+/* Results Container */
+.results-container {
+    display: flex;
+    justify-content: flex-start; /* Align items to the left */
+    gap: 20px; /* Space between filter bar and analysis section */
+    margin-bottom: 20px;
+}
+
+.analysis-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* Three items per row */
+    gap: 10px; /* Add space between rows and columns */
+    padding: 15px;
+    background-color: var(--bg-primary);
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.analysis-item {
+    background-color: var(--bg-secondary);
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px var(--shadow-light);
+    display: flex;
+    transition: background-color 0.15s ease;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+
+@media (max-width: 1024px) {
+    .analysis-container {
+        grid-template-columns: repeat(3, 1fr); /* 3 columns for medium screens */
+    }
+}
+
+@media (max-width: 768px) {
+    .analysis-container {
+        grid-template-columns: repeat(2, 1fr); /* 2 columns for small screens */
+    }
+}
+
+@media (max-width: 480px) {
+    .analysis-container {
+        grid-template-columns: 1fr; /* Single column for very small screens */
+    }
+}
+
+
+
+/* Styling the "Liczba Meczów" field */
+.analysis h3 {
+    font-size: 16px;
+    color: #003c74; /* Dark blue */
+    transition: color 0.15s ease;
+}
+
+.analysis p {
+    font-size: 20px;
+    color: #003c74;
+    font-weight: bold;
+    transition: color 0.15s ease;
+}
+
+/* Dark mode analysis text */
+[data-theme="dark"] .analysis h3 {
+    color: #d4a017; /* Gold in dark mode */
+}
+
+[data-theme="dark"] .analysis p {
+    color: #d4a017; /* Gold in dark mode */
+}
+
+
+/* Filter, Analysis, and Menu Styling */
+.filter-analysis-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: stretch; /* Makes all containers equal in height */
+    background-color: linear-gradient(90deg, #f5c000, #d4a017);
+
+        border-radius: 10px; /* Adjust value as needed */
+    margin-top: 20px; /* Match the spacing to results table */
+    margin-bottom: 20px; /* Match the spacing to results table */
+}
+
+.filter-bar {
+    flex: 1;
+    max-width: 300px;
+    background-color: var(--bg-secondary);
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px var(--shadow-light);
+    transition: background-color 0.15s ease;
+}
+
+.filter-bar,
+.analysis-container,
+.menu-bar {
+    background-color: var(--bg-primary);
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px var(--shadow-light);
+    width: fit-content; /* Dynamically adjust width based on the longest text */
+    min-width: 150px; /* Optional: Set a minimum width */
+    text-align: right;
+    border: 1px solid #ddd;
+    
+}
+
+.filter-bar select {
+    background-color: var(--bg-secondary); /* Dark mode compatible */
+    color: var(--text-primary); /* Dark mode compatible text */
+    border: none;
+    border-radius: 4px;
+    padding: 8px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.filter-bar input[type="text"] {
+    background-color: var(--bg-secondary); /* Dark mode compatible */
+    color: var(--text-primary); /* Dark mode compatible text */
+    border: none;
+    border-radius: 4px;
+    padding: 8px;
+    font-size: 14px;
+    width: 100%; /* Ensure full width */
+    box-sizing: border-box; /* Include padding in width */
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.filter-bar input#date,
+.filter-bar input#from_date,
+.filter-bar input#to_date {
+    width: 100%; /* Ensure all date fields are equal in size */
+    max-width: 300px; /* Optional: Set a maximum width for consistency */
+}
+
+
+
+.analysis-container {
+    flex: 4;
+    background-color: var(--bg-primary);
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px var(--shadow-light);
+    transition: background-color 0.15s ease;
+}
+
+.analysis-row {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 10px;
+}
+
+.analysis-item {
+    text-align: center;
+    flex: 1;
+}
+
+.analysis-item h3 {
+    margin-bottom: 5px;
+    font-size: 14px;
+    color: gold;
+    transition: color 0.15s ease;
+}
+
+.analysis-item p {
+    font-size: 14px;
+    color: #003c74;
+    font-weight: bold;
+    transition: color 0.15s ease;
+}
+
+/* Dark mode analysis-item text */
+[data-theme="dark"] .analysis-item h3 {
+    color: #f5c000; /* Bright gold in dark mode */
+}
+
+[data-theme="dark"] .analysis-item p {
+    color: #d4a017; /* Gold in dark mode */
+}
+
+.wyniki-container {
+    text-align: left;
+}
+
+.wyniki-content {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 0;
+    white-space: nowrap;
+}
+
+.wyniki-left,
+.wyniki-right {
+    flex: 1; /* Ensure equal width for both sides */
+    padding: 10px;
+    color: #003c74;
+    font-weight: bold;
+    font-size: 14px;
+    transition: color 0.15s ease;
+}
+
+/* Dark mode wyniki text */
+[data-theme="dark"] .wyniki-left,
+[data-theme="dark"] .wyniki-right {
+    color: #d4a017; /* Gold in dark mode */
+}
+
+.btn-export {
+    display: inline-block;
+    background: linear-gradient(90deg, #003c74, #0059a8);
+    color: gold;
+    padding: 10px 15px;
+    text-decoration: none;
+    font-weight: bold;
+    border-radius: 4px;
+    text-align: center;
+}
+
+.btn-export:hover {
+    background-color: gold;
+    color: #003c74;
+}
+
+form button {
+    background: linear-gradient(90deg, #003c74, #0059a8);
+    color: gold;
+    border: none;
+    padding: 10px;
+    font-size: 14px;
+    font-weight: bold;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+form button:hover {
+    background-color: gold;
+    color: #003c74;
+}
+
+select {
+    color: #003c74; /* Arka Gdynia blue */
+    background-color: #f4f4f4;
+    border: none;
+    border-radius: 4px;
+    padding: 8px;
+}
+
+/* Back button for details page */
+.back-button {
+    background: linear-gradient(90deg, #003c74, #0059a8);
+    color: gold;
+    border: none;
+    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: bold;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.back-button:hover {
+    background: gold;
+    color: #003c74;
+}
+
+/* Clear filters button */
+.clear-filters-btn {
+    background: linear-gradient(90deg, #d32f2f, #b71c1c);
+    color: white !important;
+    border: none;
+    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: bold;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    text-align: center;
+}
+
+.clear-filters-btn:hover {
+    background: linear-gradient(90deg, #f44336, #d32f2f);
+    transform: scale(1.05);
+    text-decoration: none !important;
+}
+
+/* Compact, readable headers with smart sizing */
+.results-table table th {
+    background: linear-gradient(135deg, #003c74, #0059a8);
+    color: gold;
+    padding: 8px 4px;
+    text-align: center;
+    font-size: 11px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+    overflow: hidden;
+    border-right: none;
+    position: relative;
+}
+
+/* Perfect-fit column sizing - no horizontal scroll */
+.results-table table th:nth-child(1),
+.results-table table td:nth-child(1) { width: 4%; } /* # */
+
+.results-table table th:nth-child(2),
+.results-table table td:nth-child(2) { width: 7.2%; } /* Sezon - expanded to fit full text */
+
+.results-table table th:nth-child(3),
+.results-table table td:nth-child(3) { width: 6%; } /* Kolejka */
+
+.results-table table th:nth-child(4),
+.results-table table td:nth-child(4) { width: 8%; } /* Data - expanded to show full date */
+
+.results-table table th:nth-child(5),
+.results-table table td:nth-child(5) { width: 4.5%; } /* Rok - 3/4 of 6% */
+
+.results-table table th:nth-child(6),
+.results-table table td:nth-child(6) { width: 5%; } /* Liga */
+
+.results-table table th:nth-child(7),
+.results-table table td:nth-child(7) { width: 6%; } /* Miejsce - 3/4 of 8% */
+
+.results-table table th:nth-child(8),
+.results-table table td:nth-child(8) { width: 15%; } /* Przeciwnik - 3/4 of 20% */
+
+.results-table table th:nth-child(9),
+.results-table table td:nth-child(9) { width: 7%; } /* Wynik */
+
+.results-table table th:nth-child(10),
+.results-table table td:nth-child(10) { width: 22.9%; } /* Strzelcy - reduced by 4% to accommodate Data column */
+
+.results-table table th:nth-child(11),
+.results-table table td:nth-child(11) { width: 9%; } /* Frekwencja */
+
+.results-table table th:nth-child(12),
+.results-table table td:nth-child(12) { width: 8.4%; } /* Sędzia - 7/10 of 12% */
+
+.results-table table th:last-child,
+.results-table table td:last-child { width: 7%; } /* Szczegóły - reduced to give space to Sezon */
+
+/* Data cells with smart text handling */
+.results-table table td {
+    padding: 10px 6px;
+    font-size: 13px;
+    border-bottom: 1px solid var(--border-light);
+    vertical-align: middle;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    background-color: var(--bg-secondary); /* Ensure consistent background */
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+/* Light mode text color */
+.results-table table td {
+    color: #333;
+}
+
+/* Dark mode text color - gold */
+[data-theme="dark"] .results-table table td {
+    color: #d4a017;
+}
+
+/* Dark mode links in table */
+[data-theme="dark"] .results-table table td a {
+    color: #f5c000; /* Brighter gold for links */
+}
+
+[data-theme="dark"] .results-table table td a:hover {
+    color: #ffdd00; /* Even brighter on hover */
+}
+
+/* Ensure table rows don't have alternating colors */
+.results-table table tr {
+    background-color: var(--bg-secondary);
+}
+
+.results-table table tbody tr {
+    background-color: var(--bg-secondary);
+}
+
+.results-table table tbody tr:nth-child(even) {
+    background-color: var(--bg-secondary);
+}
+
+.results-table table tbody tr:nth-child(odd) {
+    background-color: var(--bg-secondary);
+}
+
+/* Responsive text for long content */
+.results-table table td:nth-child(8), /* Przeciwnik */
+.results-table table td:nth-child(12) { /* Sędzia */
+    white-space: normal;
+    word-wrap: break-word;
+    line-height: 1.2;
+    max-height: 40px;
+    overflow: hidden;
+}
+
+/* Special handling for Data column - no text truncation */
+.results-table table td:nth-child(4) { /* Data */
+    white-space: normal;
+    text-overflow: unset;
+    overflow: visible;
+}
+
+/* Special handling for Strzelcy column - multi-row with more space */
+.results-table table td:nth-child(10) { /* Strzelcy */
+    white-space: normal;
+    word-wrap: break-word;
+    line-height: 1.3;
+    max-height: 60px;
+    overflow: hidden;
+    vertical-align: top;
+    padding: 8px 6px;
+}
+
+/* Center align specific columns */
+.results-table table td:nth-child(1), /* # */
+.results-table table td:nth-child(2), /* Sezon */
+.results-table table td:nth-child(5), /* Rok */
+.results-table table td:nth-child(7), /* Miejsce */
+.results-table table td:nth-child(9), /* Wynik */
+.results-table table td:nth-child(11) { /* Frekwencja */
+    text-align: center;
+}
+
+/* Right align Data column */
+.results-table table td:nth-child(4), /* Data */
+.results-table table th:nth-child(4) { /* Data header */
+    text-align: right;
+}
+
+/* Hover effects for better UX */
+.results-table table tr:hover td {
+    background-color: rgba(245, 192, 0, 0.1);
+    transform: scale(1.001);
+    transition: all 0.2s ease;
+}
+
+/* Corner rounding for first and last headers */
+.results-table table th:first-child {
+    border-top-left-radius: 12px;
+}
+
+.results-table table th:last-child {
+    border-top-right-radius: 12px;
+    border-right: none;
+}
+
+/* Remove all borders on cells */
+.results-table table td:last-child {
+    border-right: none;
+}
+
+.results-table table th {
+    border: none;
+}
+
+/* Simple centered details button */
+.results-table .details-button {
+    padding: 8px 12px;
+    font-size: 10px;
+    border-radius: 4px;
+    background: linear-gradient(90deg, #003c74, #0059a8);
+    text-decoration: none;
+    display: inline-block;
+    transition: transform 0.2s ease;
+    box-shadow: 0 1px 2px rgba(0, 60, 116, 0.2);
+    line-height: 1;
+    min-height: auto;
+    width: 20px;
+    height: 20px;
+}
+
+.results-table .details-button:hover {
+    transform: scale(1.05);
+}
+
+select:hover {
+    background: linear-gradient(90deg, #003c74, #0059a8); /* Blue on hover */
+    color: gold; /* Gold text on hover */
+}
+
+select option {
+    background-color: var(--bg-secondary); /* Dark mode compatible */
+    color: var(--text-primary); /* Dark mode compatible text */
+}
+
+select option:hover {
+    background: linear-gradient(90deg, #003c74, #0059a8); /* Arka Gdynia blue */
+    color: gold; /* Gold text for hover */
+}
+
+.results-page-container {
+    display: flex;
+    justify-content: space-between;
+}
+
+.filter-analysis-container {
+    flex: 3;
+}
+.results-page-container {
+    display: flex;
+    justify-content: space-between;
+}
+
+.content-wrapper {
+    display: flex;
+    width: 100%;
+}
+
+.filter-analysis-container {
+    flex: 3; /* Adjust size based on desired width */
+}
+
+.menu-bar {
+    margin-top: 20px; /* Match spacing with other containers */
+    margin-bottom: 20px; /* Match spacing with other containers */
+}
+
+.menu-bar ul {
+    list-style: none;
+    padding: 0;
+}
+
+.menu-bar ul li {
+    margin-bottom: 10px;
+}
+
+.menu-bar ul li a {
+    text-decoration: none;
+    font-weight: bold;
+    color: #003c74;
+    transition: color 0.15s ease;
+}
+
+.menu-bar ul li a:hover {
+    color: gold;
+}
+
+/* Dark mode menu text */
+[data-theme="dark"] .menu-bar ul li a {
+    color: #d4a017; /* Gold in dark mode */
+}
+
+[data-theme="dark"] .menu-bar ul li a:hover {
+    color: #f5c000; /* Brighter gold on hover */
+}
+
+
+.content-wrapper {
+    display: flex;
+    gap: 20px; /* Space between analysis and menu bar */
+    align-items: stretch; /* Ensures both sections stretch to the same height */
+}
+
+.details-container {
+    background-color: var(--bg-secondary);
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px var(--shadow-light);
+    transition: background-color 0.15s ease;
+    max-width: 900px;
+    margin: 20px auto;
+    font-family: Arial, sans-serif;
+}
+
+.header-section {
+    background: linear-gradient(90deg, #f5c000, #d4a017); /* Gold gradient */
+    color: linear-gradient(90deg, #003c74, #0059a8)old;
+    padding: 20px;
+    border-radius: 16px; /* Rounded corners */
+    margin-bottom: 20px;
+    display: flex;
+    font-weight: bold;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Optional shadow for better effect */
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.team-logo {
+    width: 15%;
+}
+
+.team-logo img {
+    max-width: 100%;
+    height: auto;
+}
+.rounded-container {
+    background: linear-gradient(90deg, #f5c000, #d4a017); /* Gold gradient */
+    border-radius: 16px; /* Rounded corners for the background */
+    padding: 20px;
+    margin: 20px auto; /* Centered with space around */
+    max-width: 1200px; /* Optional: limit the container's width */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15); /* Subtle shadow for better effect */
+}
+
+.match-details {
+    flex: 1;
+    text-align: center;
+    padding: 0 10px;
+}
+
+.match-details h1 {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.match-details .score {
+    font-size: 32px;
+    font-weight: bold;
+    margin: 10px 0;
+    color: white;
+}
+
+.match-info, .scorers-section, .lineups {
+    margin-bottom: 20px;
+    background-color: #f9f9f9;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.match-info table, .lineup-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 10px 0;
+}
+
+.match-info th, .match-info td, .lineup-table th, .lineup-table td {
+    padding: 10px;
+    border: none;
+    text-align: left;
+    font-size: 14px;
+}
+
+.lineup-table th {
+    background: linear-gradient(90deg, #003c74, #0059a8);
+    color: gold;
+    font-weight: bold;
+}
+
+.lineup-table td {
+    background-color: #f9f9f9;
+    color: #333;
+}
+
+.lineup-table tr:nth-child(even) td {
+    background-color: #f4f4f4;
+}
+
+.match-title {
+    color: linear-gradient(90deg, #003c74, #0059a8);
+    font-size: 24px;
+    font-weight: bold;
+    margin: 10px 0;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* Dark Mode Toggle Switch - Round Icon Only */
+.navbar-dark-toggle {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    z-index: 1000;
+    background: var(--bg-secondary);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    box-shadow: 0 2px 8px var(--shadow-light);
+    border: 1px solid var(--border-light);
+    transition: all 0.15s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.navbar-dark-toggle:hover {
+    box-shadow: 0 3px 12px var(--shadow-medium);
+    transform: translateY(-1px);
+}
+
+.theme-icon {
+    font-size: 20px;
+    transition: all 0.15s ease;
+}
+
+/* Light mode shows sun */
+.theme-icon::before {
+    content: '☀️';
+}
+
+/* Dark mode shows moon */
+[data-theme="dark"] .theme-icon::before {
+    content: '🌙';
+}
+
+/* Clean up - old toggle styles removed */

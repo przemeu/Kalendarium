@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}{{ initial_name }}{% endblock %}
+
+{% block content %}
+<div class="opponent-container">
+    <h1>{{ initial_name }}</h1>
+    <img src="{{ opponent['logo'] }}" alt="{{ initial_name }} logo" class="opponent-logo">
+    <div class="opponent-details">
+        <p><strong>Full Name:</strong> {{ opponent['Pelna Nazwa'] }}</p>
+        <p><strong>Founded:</strong> {{ opponent['Data zalozenia'] }}</p>
+        <p><strong>Colors:</strong> {{ opponent['barwy'] }}</p>
+        <p><strong>Coach:</strong> {{ opponent['trener'] }}</p>
+        <p><strong>Website:</strong> <a href="{{ opponent['strona'] }}" target="_blank">{{ opponent['strona'] }}</a></p>
+    </div>
+</div>
+{% endblock %}

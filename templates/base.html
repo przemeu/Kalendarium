@@ -1,0 +1,247 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        body {
+            background-color: #f4f4f4;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            min-height: 90vh;
+        }
+
+        .rounded-container {
+            background: linear-gradient(90deg, #f5c000, #d4a017); /* Gold gradient */
+            border-radius: 16px; /* Rounded corners for the background */
+            padding: 20px;
+            margin: 20px auto; /* Centered with space around */
+            max-width: 1200px; /* Optional: limit the container's width */
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15); /* Subtle shadow for better effect */
+        }
+
+        header.navbar {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            background-color: #f4f4f4;
+            padding: 15px 30px;
+            position: relative; /* For positioning the toggle button */
+        }
+
+        .logo img {
+            max-width: 150px;
+        }
+
+        nav {
+            margin-top: 10px;
+        }
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            gap: 5px;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: darkblue;
+            font-weight: bold;
+            font-size: 14px;
+            padding: 5px 8px;
+        }
+
+        nav ul li a:hover {
+            color: gold;
+        }
+
+        main {
+            flex: 1;
+        }
+
+        footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 30px;
+            background-color: #f4f4f4;
+            color: gray;
+            font-size: 12px;
+            box-shadow: 0 -1px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        footer a {
+            text-decoration: none; /* No underline */
+            color: gray; /* Same color as the text */
+        }
+
+        footer a:hover {
+            color: gray; /* No hover effect */
+        }
+    </style>
+    <script>
+        // Dark mode functionality
+        class DarkModeToggle {
+            constructor() {
+                this.theme = localStorage.getItem('theme') || 'light';
+                this.init();
+            }
+
+            init() {
+                // Apply saved theme
+                document.documentElement.setAttribute('data-theme', this.theme);
+                
+                // Update base.html styles for dark mode
+                this.updateBaseStyles();
+                
+                // Add event listener when DOM is loaded
+                document.addEventListener('DOMContentLoaded', () => {
+                    const toggleButton = document.getElementById('navbar-dark-toggle');
+                    if (toggleButton) {
+                        toggleButton.addEventListener('click', () => this.toggle());
+                    }
+                });
+            }
+
+            updateBaseStyles() {
+                const body = document.body;
+                const header = document.querySelector('header.navbar');
+                const footer = document.querySelector('footer');
+                const roundedContainer = document.querySelector('.rounded-container');
+                
+                if (this.theme === 'dark') {
+                    // Update body background in base.html inline styles
+                    if (body) body.style.backgroundColor = '#000811';
+                    if (header) header.style.backgroundColor = '#000811';
+                    if (footer) {
+                        footer.style.backgroundColor = '#000811';
+                        footer.style.color = '#d4a017';
+                    }
+                    
+                    // Update footer links
+                    const footerLinks = footer?.querySelectorAll('a');
+                    if (footerLinks) {
+                        footerLinks.forEach(link => {
+                            link.style.color = '#d4a017';
+                        });
+                    }
+                    
+                    // Update nav links
+                    const navLinks = document.querySelectorAll('nav ul li a');
+                    navLinks.forEach(link => {
+                        link.style.color = '#d4a017';
+                    });
+                } else {
+                    // Reset to light mode
+                    if (body) body.style.backgroundColor = '#f4f4f4';
+                    if (header) header.style.backgroundColor = '#f4f4f4';
+                    if (footer) {
+                        footer.style.backgroundColor = '#f4f4f4';
+                        footer.style.color = 'gray';
+                    }
+                    
+                    // Reset footer links
+                    const footerLinks = footer?.querySelectorAll('a');
+                    if (footerLinks) {
+                        footerLinks.forEach(link => {
+                            link.style.color = 'gray';
+                        });
+                    }
+                    
+                    // Reset nav links
+                    const navLinks = document.querySelectorAll('nav ul li a');
+                    navLinks.forEach(link => {
+                        link.style.color = 'darkblue';
+                    });
+                }
+            }
+
+            toggle() {
+                this.theme = this.theme === 'light' ? 'dark' : 'light';
+                document.documentElement.setAttribute('data-theme', this.theme);
+                localStorage.setItem('theme', this.theme);
+                this.updateBaseStyles();
+            }
+        }
+
+        // Initialize dark mode toggle
+        new DarkModeToggle();
+    </script>
+</head>
+<body>
+    <div class="rounded-container">
+        <header class="navbar">
+            <div class="logo-container">
+                <a href="https://arka.gdynia.pl/" target="_blank" class="herb">
+                    <img src="https://arka.gdynia.pl/files/herb/arka_gdynia_mzks_kolor.png" alt="Arka Gdynia">
+                </a>
+                <div class="new-logo">
+                    <img src="https://iili.io/2gimNEX.png" alt="Kalendarium Logo">
+                </div>
+            </div>
+            
+            <nav>
+                <ul>
+                    <li><a href="{{ url_for('index') }}">Home</a></li>
+                    {% if current_user.is_authenticated %}
+                        <li><a href="#" style="color: #d4a017;">Welcome, {{ current_user.email }}</a></li>
+                        <li><a href="{{ url_for('logout') }}">Logout</a></li>
+                    {% else %}
+                        <li><a href="{{ url_for('login') }}">Login</a></li>
+                        <li><a href="{{ url_for('register') }}">Register</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+            
+            <!-- Dark Mode Toggle Button in Navbar -->
+            <div id="navbar-dark-toggle" class="navbar-dark-toggle" aria-label="Toggle dark mode">
+                <span class="theme-icon"></span>
+            </div>
+        </header>
+        
+        <main>
+            <!-- Flash messages -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="flash-messages" style="margin: 20px 0;">
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }}" style="padding: 10px; margin: 5px 0; border-radius: 5px; 
+                                {% if category == 'error' %}background: #fee; border: 1px solid #f88; color: #c66;
+                                {% elif category == 'success' %}background: #efe; border: 1px solid #8f8; color: #6c6;
+                                {% elif category == 'info' %}background: #def; border: 1px solid #88f; color: #66c;
+                                {% else %}background: #ffa; border: 1px solid #ff8; color: #c93;{% endif %}">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+            
+            {% block content %}{% endblock %}
+        </main>
+        
+        <!-- Sticky Footer Section -->
+        <footer>
+            <div>
+                Dane pochodzą z: 
+                <a href="https://lubimyczytac.pl/ksiazka/243643/zolto-niebiescy" target="_blank">Żółto-niebiescy. Monografia</a> 
+                M. Witczaka oraz strony 
+                <a href="http://www.90minut.pl/" target="_blank">90minut.pl</a>.
+            </div>
+            <div>
+                Dla ujednolicenia statystyk przyjęto starą nomenklaturę rozgrywek. Ekstraklasa to zawsze I Liga. Obecna I Liga to zawsze II Liga.
+            </div>
+        </footer>
+    </div>
+</body>
+</html>

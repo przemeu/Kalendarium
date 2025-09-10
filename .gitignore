@@ -1,0 +1,50 @@
+# Environment variables (contains sensitive information)
+.env
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
+ENV/
+
+# Flask
+instance/
+.webassets-cache
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Project specific - temporary/working files
+*.7z
+*.exe
+*.dll
+*.def
+kronika.xlsx
+*.txt
+*.csv
+*.xml
+iTpRPUA_*.png*
+
+# Directories we don't need in Git
+0512more/
+d/
+Socios/
+
+# Keep important files
+!CLAUDE.md
+!requirements.txt

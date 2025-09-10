@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wybierz Filtry</title>
+</head>
+<body>
+    <h1>Wybierz Filtry</h1>
+    <form action="/results" method="get">
+        <!-- Sezon Filter -->
+        <label for="season">Sezon:</label>
+        <select name="season" id="season">
+            <option value="">-- Wybierz Sezon --</option>
+            {% for season in seasons %}
+                <option value="{{ season['Sezon'] }}">{{ season['Sezon'] }}</option>
+            {% endfor %}
+        </select>
+
+        <!-- Przeciwnik Filter -->
+        <label for="opponent">Przeciwnik:</label>
+        <select name="opponent" id="opponent">
+            <option value="">-- Wybierz Przeciwnika --</option>
+            {% for opponent in opponents %}
+                <option value="{{ opponent['Przeciwnik'] }}">{{ opponent['Przeciwnik'] }}</option>
+            {% endfor %}
+        </select>
+
+        <!-- Liga Filter -->
+        <label for="league">Liga:</label>
+        <select name="league" id="league">
+            <option value="">-- Wybierz Ligę --</option>
+            {% for league in leagues %}
+                <option value="{{ league['Liga'] }}">{{ league['Liga'] }}</option>
+            {% endfor %}
+        </select>
+
+        <!-- Miejsce Filter -->
+        <label for="place">Miejsce:</label>
+        <select name="place" id="place">
+            <option value="">-- Wybierz Miejsce --</option>
+            {% for place in places %}
+                <option value="{{ place['Miejsce'] }}">{{ place['Miejsce'] }}</option>
+            {% endfor %}
+        </select>
+
+        <!-- Date Filter -->
+        <label for="date">Data (DD.MM):</label>
+        <input type="text" name="date" id="date" placeholder="e.g., 01.01" value="{{ date }}">
+
+        <button type="submit">Pokaż Wyniki</button>
+    </form>
+</body>
+</html>
