@@ -1,0 +1,8 @@
+flask
+pillow
+gunicorn
+pandas
+flask-login
+flask-wtf
+flask-mail
+python-dotenv
