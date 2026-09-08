@@ -3,123 +3,188 @@
 {% block title %}Szczegóły Meczu{% endblock %}
 
 {% block content %}
-<div class="details-container">
-    <!-- Back Button -->
-    <div class="back-button-container" style="margin-bottom: 20px;">
-        <button onclick="history.back()" class="back-button">
-            ← Powrót
-        </button>
-    </div>
-    
-    <div class="header-section">
-        <div class="header-content">
-            <!-- Left Logo -->
-            <div class="team-logo">
-                {% if match['Miejsce'] == 'Dom' %}
-                <img src="https://arka.gdynia.pl/files/herb/arka_gdynia_mzks_kolor.png" alt="Arka Gdynia Logo">
-                {% endif %}
-                <!-- For away games, left side shows opponent logo (if available), but we don't have opponent logos -->
-            </div>
-    
-        <!-- Match Details -->
-        <div class="match-details">
-            <p>
-                {{ match['Full date'] }}<br>
-            </p>
-            <h1 class="match-title">
-                {% if match['Miejsce'] == 'Dom' %}
-                Arka Gdynia - {{ match['Przeciwnik'] }}
-                {% else %}
-                {{ match['Przeciwnik'] }} - Arka Gdynia
-                {% endif %}
-            </h1>
-            <p class="score">{{ match['display_score'] }}</p>
-        </div>
-    
-            <!-- Right Logo -->
-            <div class="team-logo">
-                {% if match['Miejsce'] == 'Dom' %}
-                <!-- For home games, right side would show opponent logo (if available), but we don't have opponent logos -->
-                {% else %}
-                <img src="https://arka.gdynia.pl/files/herb/arka_gdynia_mzks_kolor.png" alt="Arka Gdynia Logo">
-                {% endif %}
-            </div>
-        </div>
-    </div>
-    
+<div class="details-back-bar">
+    <button onclick="history.back()" class="back-button">
+        ← Powrót
+    </button>
+</div>
 
-    <!-- Match Info Section -->
-        <div class="match-info">
-            <h2>Informacje</h2>
-            <table>
-                <tr><th>Sezon</th><td>{{ match['Sezon'] }}</td></tr>
-                {% if match['Kolejka'] not in ['PL', 'PP', 'PE', 'B'] %}
-                
-                <tr><th>Kolejka</th><td>{{ match['Kolejka'] }}</td></tr>
+<!-- Scoreboard Hero Card -->
+<div class="details-scoreboard-card">
+    <div class="match-meta-info">
+        <span class="meta-season">{{ match['Sezon'] }}</span>
+        <span class="meta-separator">•</span>
+        <span class="meta-league">
+            {{ get_friendly_league_name(match['Liga'], match['Sezon']) }}
+        </span>
+        {% if match['Kolejka'] not in ['PL', 'PP', 'PE', 'B'] %}
+        <span class="meta-separator">•</span>
+        <span class="meta-round">Kolejka {{ match['Kolejka'] }}</span>
+        {% endif %}
+    </div>
+    
+    <div class="scoreboard-main">
+        <!-- Home Team -->
+        <div class="team-container home">
+            <div class="team-logo-wrapper">
+                {% if match['Miejsce'] == 'Dom' %}
+                <img src="{{ get_logo_url('Arka Gdynia') or '/static/logos/arka_gdynia.png' }}" alt="Arka Gdynia Logo">
+                {% else %}
+                {% set opp_logo = get_logo_url(match['Przeciwnik']) %}
+                {% if opp_logo %}
+                <img src="{{ opp_logo }}" alt="{{ match['Przeciwnik'] }} Logo">
+                {% else %}
+                <div class="logo-placeholder">{{ match['Przeciwnik'][:3]|upper }}</div>
                 {% endif %}
-                <tr><th>Przeciwnik</th><td>{{ match['Przeciwnik'] }}</td></tr>
+                {% endif %}
+            </div>
+            <h2 class="team-name">{{ 'Arka Gdynia' if match['Miejsce'] == 'Dom' else match['Przeciwnik'] }}</h2>
+        </div>
+
+        <!-- Score -->
+        <div class="score-container">
+            <div class="score-display">{{ match['display_score'] }}</div>
+            <div class="match-location">{{ 'Dom' if match['Miejsce'] == 'Dom' else 'Wyjazd' }}</div>
+        </div>
+
+        <!-- Away Team -->
+        <div class="team-container away">
+            <div class="team-logo-wrapper">
+                {% if match['Miejsce'] == 'Dom' %}
+                {% set opp_logo = get_logo_url(match['Przeciwnik']) %}
+                {% if opp_logo %}
+                <img src="{{ opp_logo }}" alt="{{ match['Przeciwnik'] }} Logo">
+                {% else %}
+                <div class="logo-placeholder">{{ match['Przeciwnik'][:3]|upper }}</div>
+                {% endif %}
+                {% else %}
+                <img src="{{ get_logo_url('Arka Gdynia') or '/static/logos/arka_gdynia.png' }}" alt="Arka Gdynia Logo">
+                {% endif %}
+            </div>
+            <h2 class="team-name">{{ match['Przeciwnik'] if match['Miejsce'] == 'Dom' else 'Arka Gdynia' }}</h2>
+        </div>
+    </div>
+</div>
+
+<!-- Details Grid (Left/Right) -->
+<div class="details-grid">
+    <!-- Left Column: Match Details & Timeline -->
+    <div class="details-column-left">
+        <!-- Match Info Section -->
+        <div class="details-section-card match-info-card">
+            <h3>📊 Informacje o meczu</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">Data:</span>
+                    <span class="info-value">{{ match['Full date'] }}</span>
+                </div>
                 {% if match['Frekwencja'] %}
-                <tr><th>Frekwencja</th><td>{{ match['Frekwencja'] | int }}</td></tr>
+                <div class="info-item">
+                    <span class="info-label">Frekwencja:</span>
+                    <span class="info-value">{{ match['Frekwencja'] | int }} widzów</span>
+                </div>
                 {% endif %}
                 {% if match['sedzia'] %}
-                <tr><th>Sędzia</th><td>{{ match['sedzia'] }}</td></tr>
+                <div class="info-item">
+                    <span class="info-label">Sędzia:</span>
+                    <span class="info-value">
+                        <a href="/results?referee={{ match['sedzia'] }}" class="referee-link">{{ match['sedzia'] }}</a>
+                    </span>
+                </div>
                 {% endif %}
-            </table>
+            </div>
         </div>
-    
 
-    <!-- Scorers and Opponent Goals Section -->
-   <!-- Scorers and Opponent Goals Section -->
-<div class="scorers-section">
-    <h2>Gole</h2>
-    <table class="lineup-table">
-        <thead>
-            <tr>
-                {% if match['Miejsce'] == 'Dom' %}
-                <th>Arka Gdynia</th>
-                <th>{{ match['Przeciwnik'] }}</th>
-                {% else %}
-                <th>{{ match['Przeciwnik'] }}</th>
-                <th>Arka Gdynia</th>
-                {% endif %}
-            </tr>
-        </thead>
-        <tbody>
-            {% for i in range(match['max_length_scorers']) %}
-            <tr>
-                <td>{{ match['scorers'][i] if i < match['scorers']|length else '' }}</td>
-                <td>{{ match['opponent_goals'][i] if i < match['opponent_goals']|length else '' }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+        <!-- Timeline Section -->
+        {% if match['events'] %}
+        <div class="details-section-card timeline-card">
+            <h3>⏱️ Przebieg meczu</h3>
+            <div class="timeline">
+                {% for event in match['events'] %}
+                <div class="timeline-event {{ 'home' if event.is_home else 'away' }}">
+                    <div class="timeline-badge">
+                        {% if event.type == 'goal' %}⚽
+                        {% elif event.type == 'penalty' %}🥅
+                        {% elif event.type == 'own_goal' %}❌
+                        {% elif event.type == 'card_yellow' %}<span class="card-badge yellow"></span>
+                        {% elif event.type == 'card_red' %}<span class="card-badge red"></span>
+                        {% endif %}
+                    </div>
+                    <div class="timeline-content">
+                        <span class="event-minute">{{ event.minute }}'</span>
+                        <span class="event-player">
+                            {% if event.type == 'goal' or event.type == 'penalty' %}
+                                <a href="/results?scorer={{ event.player }}" class="player-link">{{ event.player }}</a>
+                                {% if event.type == 'penalty' %} (k.){% endif %}
+                            {% elif event.type == 'own_goal' %}
+                                <a href="/results?scorer=s)" class="player-link">{{ event.player }}</a> (samob.)
+                            {% else %}
+                                {{ event.player }}
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Right Column: Lineups / Squads -->
+    <div class="details-column-right">
+        <div class="details-section-card lineups-card">
+            <h3>📋 Składy</h3>
+            
+            <div class="lineups-side-by-side">
+                <!-- Home Team Lineup -->
+                <div class="lineup-team home">
+                    <h4>{{ 'Arka Gdynia' if match['Miejsce'] == 'Dom' else match['Przeciwnik'] }}</h4>
+                    <ul class="lineup-list">
+                        {% for i in range(match['max_length_lineups']) %}
+                        {% set player = match['arka_players'][i] if i < match['arka_players']|length else none %}
+                        {% if player %}
+                        <li class="lineup-player {{ player.status }}">
+                            <span class="player-name"><a href="/results?player={{ player.name }}" class="player-link">{{ player.name }}</a></span>
+                            {% if player.status == 'off' %}
+                                <span class="substitution-icon off" title="Schodzi ({{ player.minute }}')">⮟ {{ player.minute }}'</span>
+                            {% elif player.status == 'on' %}
+                                <span class="substitution-icon on" title="Wchodzi ({{ player.minute }}')">⮝ {{ player.minute }}'</span>
+                            {% endif %}
+                        </li>
+                        {% else %}
+                        <li class="lineup-player empty-placeholder">
+                            <span class="player-name">&nbsp;</span>
+                        </li>
+                        {% endif %}
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <!-- Away Team Lineup -->
+                <div class="lineup-team away">
+                    <h4>{{ match['Przeciwnik'] if match['Miejsce'] == 'Dom' else 'Arka Gdynia' }}</h4>
+                    <ul class="lineup-list">
+                        {% for i in range(match['max_length_lineups']) %}
+                        {% set player = match['opponent_players'][i] if i < match['opponent_players']|length else none %}
+                        {% if player %}
+                        <li class="lineup-player {{ player.status }}">
+                            <span class="player-name"><a href="/results?player={{ player.name }}" class="player-link">{{ player.name }}</a></span>
+                            {% if player.status == 'off' %}
+                                <span class="substitution-icon off" title="Schodzi ({{ player.minute }}')">⮟ {{ player.minute }}'</span>
+                            {% elif player.status == 'on' %}
+                                <span class="substitution-icon on" title="Wchodzi ({{ player.minute }}')">⮝ {{ player.minute }}'</span>
+                            {% endif %}
+                        </li>
+                        {% else %}
+                        <li class="lineup-player empty-placeholder">
+                            <span class="player-name">&nbsp;</span>
+                        </li>
+                        {% endif %}
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-
-<!-- Lineups Section -->
-<div class="lineups">
-    <h2>Składy</h2>
-    <table class="lineup-table">
-        <thead>
-            <tr>
-                {% if match['Miejsce'] == 'Dom' %}
-                <th>Arka Gdynia</th>
-                <th>{{ match['Przeciwnik'] }}</th>
-                {% else %}
-                <th>{{ match['Przeciwnik'] }}</th>
-                <th>Arka Gdynia</th>
-                {% endif %}
-            </tr>
-        </thead>
-        <tbody>
-            {% for i in range(match['max_length_lineups']) %}
-            <tr>
-                <td>{{ match['arka_players'][i] if i < match['arka_players']|length else '' }}</td>
-                <td>{{ match['opponent_players'][i] if i < match['opponent_players']|length else '' }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
-
-
 {% endblock %}

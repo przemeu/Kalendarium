@@ -3,13 +3,25 @@
 {% block title %}Wyniki{% endblock %}
 
 {% block content %}
+{% if is_selected_view | default(false) %}
+<div class="selected-view-header">
+    <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
+        <div>
+            <h2 style="margin: 0; color: #003c74;">⭐ Zaznaczone mecze ({{ matches|length }})</h2>
+            <p style="margin: 4px 0 0; font-size: 13px; color: #666;">Poniżej statystyki dla wybranych meczów</p>
+        </div>
+        <a href="/results" class="back-button" style="text-decoration: none;">← Powrót do filtrów</a>
+    </div>
+</div>
+{% endif %}
+
 <div class="results-page-container">
     <div class="content-wrapper">
         <!-- Filter and Analysis Section -->
         <div class="filter-analysis-container">
             <!-- Filter Section -->
             <div class="filter-bar">
-                <form action="/results" method="get">
+                <form action="/results" method="get" class="filter-form" style="margin-bottom: 0;">
                     <select name="season">
                         <option value="">Sezon</option>
                         {% for season in seasons %}
@@ -43,6 +55,8 @@
                         <option value="Porażka" {% if request.args.get('wynik') == 'Porażka' %}selected{% endif %}>Porażka</option>
                     </select>
                     
+                    <input type="text" name="result" placeholder="Wynik (np. 1:1)" value="{{ request.args.get('result', '') }}">
+                    
                     <select name="place">
                         <option value="">Miejsce</option>
                         {% for place in places %}
@@ -63,224 +77,223 @@
                         {% endfor %}
                     </select>
                     
-                    <input 
-        type="text" 
-        name="scorer" 
-        placeholder="Strzelec" 
-        value="{{ request.args.get('scorer', '') }}">
-    
-
+                    <input type="text" name="player" placeholder="Zawodnik np. Sorloth" value="{{ request.args.get('player', '') }}">
+                    
+                    <input type="text" name="scorer" placeholder="Strzelec np. Marcus" value="{{ 'Bramki samobójcze' if request.args.get('scorer', '') == 's)' else request.args.get('scorer', '') }}">
+                    <input type="text" name="goal_minute" placeholder="Minuta gola - np. 20" value="{{ request.args.get('goal_minute', '') }}">
+                    <input type="text" name="kolejka" placeholder="Kolejka np. 1, 3, 7 lub 21-34" value="{{ request.args.get('kolejka', '') }}">
                     <input type="text" name="date" placeholder="Dzień w roku - np. 09.07" value="{{ request.args.get('date', '') if request.args.get('date', '') != 'None' else '' }}">
                     <input type="text" name="from_date" id="from_date" placeholder="Data od - np. 2017/05" value="{{ request.args.get('from_date', '') }}">
                     <input type="text" name="to_date" id="to_date" placeholder="Data do - np. 2025/01" value="{{ request.args.get('to_date', '') }}">
+                    
+                    <select name="sort_order">
+                        <option value="asc" {% if request.args.get('sort_order', 'asc') == 'asc' %}selected{% endif %}>Od najstarszych (Rosnąco)</option>
+                        <option value="desc" {% if request.args.get('sort_order') == 'desc' %}selected{% endif %}>Od najnowszych (Malejąco)</option>
+                    </select>
 
-                    <button type="submit">Filtruj</button>
+                    <button type="submit" class="modern-btn modern-btn-primary">Filtruj</button>
                 </form>
                 
-                <!-- Clear filters button as separate link -->
-                <a href="/results" class="clear-filters-btn" style="display: inline-block; text-decoration: none; margin-top: 10px;">Usuń filtry</a>
+                <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 0px; width: 100%;">
+                    <button type="button" onclick="window.history.back()" class="modern-btn modern-btn-secondary">Cofnij Filtr</button>
+                    <a href="/results" class="modern-btn modern-btn-danger">Usuń filtry</a>
+                </div>
             </div>
 
             <!-- Analysis Section -->
             <div class="analysis-container">
-                
-                {% if num_matches > 0 %}
-                <div class="analysis-item">
+                          <div class="analysis-item">
                     <h3>Liczba Meczów</h3>
                     <p>
-                        Łącznie: {{ num_matches }}<br>
-                        Domowe: {{ home_matches }}<br>
-                        Wyjazdowe: {{ away_matches }}
+                        Łącznie: <span class="stat-value">{{ num_matches }}</span><br>
+                        Domowe: <span class="stat-value">{{ home_matches }}</span><br>
+                        Wyjazdowe: <span class="stat-value">{{ away_matches }}</span>
                     </p>
                 </div>
-                {% endif %}
-                {% if num_wins > 0 or num_draws > 0 or num_losses > 0 %}
 
                 <div class="analysis-item">
                     <h3>Wyniki</h3>
                     <p>
-                        Wygrane: {{ num_wins }}<br>
-                        Remisy: {{ num_draws }}<br>
-                        Porażki: {{ num_losses }}
+                        Wygrane: <span class="stat-value">{{ num_wins }}</span><br>
+                        Remisy: <span class="stat-value">{{ num_draws }}</span><br>
+                        Porażki: <span class="stat-value">{{ num_losses }}</span>
                     </p>
                 </div>
-                {% endif %}
 
-                {% if num_matches > 0 and (num_wins > 0 or num_draws > 0 or num_losses > 0) %}
                 <div class="analysis-item">
                     <h3>Wyniki Procentowo</h3>
                     <p>
-                        Wygrane: {{ ('%.2f' % ((num_wins / num_matches) * 100)) }}%<br>
-                        Remisy: {{ ('%.2f' % ((num_draws / num_matches) * 100)) }}%<br>
-                        Porażki: {{ ('%.2f' % ((num_losses / num_matches) * 100)) }}%
+                        Wygrane: <span class="stat-value">{{ ('%.2f' % ((num_wins / num_matches) * 100)) if num_matches > 0 else '0.00' }}%</span><br>
+                        Remisy: <span class="stat-value">{{ ('%.2f' % ((num_draws / num_matches) * 100)) if num_matches > 0 else '0.00' }}%</span><br>
+                        Porażki: <span class="stat-value">{{ ('%.2f' % ((num_losses / num_matches) * 100)) if num_matches > 0 else '0.00' }}%</span>
                     </p>
                 </div>
-                {% endif %}
        
-                {% if total_first_digits > 0 or total_second_digits > 0 %}
                 <div class="analysis-item">
                     <h3>Bilans Bramkowy</h3>
                     <p>
-                        Łącznie: {{ total_first_digits }} : {{ total_second_digits }}<br>
-                        Domowe: {{ home_goals }} : {{ home_goals_conceded }}<br>
-                        Wyjazdowe: {{ away_goals }} : {{ away_goals_conceded }}
+                        Łącznie: <span class="stat-value">{{ total_first_digits }} : {{ total_second_digits }}</span><br>
+                        Domowe: <span class="stat-value">{{ home_goals }} : {{ home_goals_conceded }}</span><br>
+                        Wyjazdowe: <span class="stat-value">{{ away_goals }} : {{ away_goals_conceded }}</span>
                     </p>
                 </div>
-                {% endif %}
                 
-            
-                {% if home_wins or away_wins or home_draws or away_draws or home_losses or away_losses %}
                 <div class="analysis-item wyniki-container">
                     <h3>Wyniki Domowe vs Wyjazdowe</h3>
                     <div class="wyniki-content">
                         <div class="wyniki-left">
-                            Wygrane: {{ home_wins }}<br>
-                            Remisy: {{ home_draws }}<br>
-                            Porażki: {{ home_losses }}
+                            Wygrane: <span class="stat-value">{{ home_wins or 0 }}</span><br>
+                            Remisy: <span class="stat-value">{{ home_draws or 0 }}</span><br>
+                            Porażki: <span class="stat-value">{{ home_losses or 0 }}</span>
                         </div>
                         <div class="wyniki-right">
-                            Wygrane: {{ away_wins }}<br>
-                            Remisy: {{ away_draws }}<br>
-                            Porażki: {{ away_losses }}
+                            Wygrane: <span class="stat-value">{{ away_wins or 0 }}</span><br>
+                            Remisy: <span class="stat-value">{{ away_draws or 0 }}</span><br>
+                            Porażki: <span class="stat-value">{{ away_losses or 0 }}</span>
                         </div>
                     </div>
                 </div>
-                {% endif %}
 
-
-                {% if highest_attendance_home or highest_attendance_away %}
                 <div class="analysis-item">
-                    <h3>Najlepsza Frekwencja</h3>
+                    <h3>Frekwencja</h3>
                     <p>
-                        {% if highest_attendance_home %}
-                        U siebie: {{ highest_attendance_home }} ({{ highest_attendance_home_year }})<br>
-                        {% endif %}
-                        {% if highest_attendance_away %}
-                        Na wyjeździe: {{ highest_attendance_away }} ({{ highest_attendance_away_year }})
-                        {% endif %}
+                        Najwyższa u siebie: <span class="stat-value">{{ highest_attendance_home or '-' }}</span> {% if highest_attendance_home and highest_attendance_home_year %}<span style="white-space: nowrap;">(<span class="stat-value">{{ highest_attendance_home_year }}</span>)</span>{% endif %}<br>
+                        Średnia u siebie: <span class="stat-value">{{ average_attendance_home or '-' }}</span><br>
+                        Najwyższa na wyjeździe: <span class="stat-value">{{ highest_attendance_away or '-' }}</span> {% if highest_attendance_away and highest_attendance_away_year %}<span style="white-space: nowrap;">(<span class="stat-value">{{ highest_attendance_away_year }}</span>)</span>{% endif %}<br>
+                        Średnia na wyjeździe: <span class="stat-value">{{ average_attendance_away or '-' }}</span>
                     </p>
                 </div>
-                {% endif %}
             
-                {% if top_scorers and top_scorers|length > 0 and not (top_scorers[0][0] == "" and top_scorers[0][1] == "") %}
                 <div class="analysis-item">
                     <h3>Najlepszy strzelec</h3>
                     <p>
-                        Łącznie: {% for scorer, goals in top_scorers %}
-                            {{ scorer }} - {{ goals }}<br>
-                        {% endfor %}
-                        {% if home_top_scorer %}
-                        Domowe: {{ home_top_scorer[0] }} - {{ home_top_scorer[1] }}<br>
+                        Łącznie: <br>
+                        {% if top_scorers and top_scorers|length > 0 and not (top_scorers[0][0] == "" and top_scorers[0][1] == "") %}
+                            {% if top_scorers|length > 3 %}
+                                {% set count = top_scorers|length %}
+                                {% set goals = top_scorers[0][1] %}
+                                {% if count == 4 %}{% set word = "Czterech graczy" %}
+                                {% elif count == 5 %}{% set word = "Pięciu graczy" %}
+                                {% elif count == 6 %}{% set word = "Sześciu graczy" %}
+                                {% elif count == 7 %}{% set word = "Siedmiu graczy" %}
+                                {% elif count == 8 %}{% set word = "Ośmiu graczy" %}
+                                {% elif count == 9 %}{% set word = "Dziewięciu graczy" %}
+                                {% elif count == 10 %}{% set word = "Dziesięciu graczy" %}
+                                {% else %}{% set word = count ~ " graczy" %}
+                                {% endif %}
+                                {{ word }} <span class="stat-value">{{ goals }}</span><br>
+                            {% else %}
+                                {% for scorer, goals in top_scorers %}
+                                    {{ scorer }} <span class="stat-value">{{ goals }}</span><br>
+                                {% endfor %}
+                            {% endif %}
+                        {% else %}
+                            - <br>
                         {% endif %}
-                        {% if away_top_scorer %}
-                        Wyjazdowe: {{ away_top_scorer[0] }} - {{ away_top_scorer[1] }}
-                        {% endif %}
+                        Domowe: {% if home_top_scorer and home_top_scorer[0] %}{{ home_top_scorer[0] }} <span class="stat-value">{{ home_top_scorer[1] }}</span>{% else %}-{% endif %}<br>
+                        Wyjazdowe: {% if away_top_scorer and away_top_scorer[0] %}{{ away_top_scorer[0] }} <span class="stat-value">{{ away_top_scorer[1] }}</span>{% else %}-{% endif %}
                     </p>
                 </div>
-                {% endif %}
             
-                {% if num_matches > 0 %}
-<div class="analysis-item">
-    <h3>Średnia Bramek</h3>
-    <p>
-        Strzelone: {{ ('%.2f' % (total_first_digits / num_matches)) }}<br>
-        Stracone: {{ ('%.2f' % (total_second_digits / num_matches)) }}
-    </p>
-</div>
-{% endif %}
+                <div class="analysis-item">
+                    <h3>Średnia Bramek</h3>
+                    <p>
+                        Strzelone: <span class="stat-value">{{ ('%.2f' % (total_first_digits / num_matches)) if num_matches > 0 else '0.00' }}</span><br>
+                        Stracone: <span class="stat-value">{{ ('%.2f' % (total_second_digits / num_matches)) if num_matches > 0 else '0.00' }}</span>
+                    </p>
+                </div>
 
-{% if num_matches > 0 and (home_clean_sheets > 0 or away_clean_sheets > 0) %}
-<div class="analysis-item">
-    <h3>Czyste Konto</h3>
-    <p>
-        Łącznie: {{ clean_sheet_count }} ({{ ('%.2f' % ((clean_sheet_count / num_matches) * 100)) }}%)<br>
-        {% if home_matches > 0 %}
-        Domowe: {{ home_clean_sheets }} ({{ ('%.2f' % ((home_clean_sheets / home_matches) * 100)) }}%)<br>
-        {% endif %}
-        {% if away_matches > 0 %}
-        Wyjazdowe: {{ away_clean_sheets }} ({{ ('%.2f' % ((away_clean_sheets / away_matches) * 100)) }}%)
-        {% endif %}
-    </p>
-</div>
-{% endif %}
-                {% if longest_streak > 0 %}
+                <div class="analysis-item">
+                    <h3>Czyste Konto</h3>
+                    <p>
+                        Łącznie: <span class="stat-value">{{ clean_sheet_count }}</span> <span style="white-space: nowrap;">(<span class="stat-value">{{ ('%.2f' % ((clean_sheet_count / num_matches) * 100)) if num_matches > 0 else '0.00' }}%</span>)</span><br>
+                        Domowe: <span class="stat-value">{{ home_clean_sheets }}</span> <span style="white-space: nowrap;">(<span class="stat-value">{{ ('%.2f' % ((home_clean_sheets / home_matches) * 100)) if home_matches > 0 else '0.00' }}%</span>)</span><br>
+                        Wyjazdowe: <span class="stat-value">{{ away_clean_sheets }}</span> <span style="white-space: nowrap;">(<span class="stat-value">{{ ('%.2f' % ((away_clean_sheets / away_matches) * 100)) if away_matches > 0 else '0.00' }}%</span>)</span>
+                    </p>
+                </div>
+
                 <div class="analysis-item">
                     <h3>Seria wygranych</h3>
                     <p>
-                        {{ longest_streak }}<br>
-                        Od: {{ longest_streak_start_date }}<br>
-                        Do: {{ longest_streak_end_date }}
+                        Maksymalna: <span class="stat-value">{{ longest_streak }}</span><br>
+                        Od: <span class="stat-value">{{ longest_streak_start_date or '-' }}</span><br>
+                        Do: <span class="stat-value">{{ longest_streak_end_date or '-' }}</span>
                     </p>
                 </div>
-                {% endif %}
             
-                {% if longest_unbeaten_streak > 0 %}
                 <div class="analysis-item">
                     <h3>Seria bez porażki</h3>
                     <p>
-                        {{ longest_unbeaten_streak }}<br>
-                        Od: {{ longest_unbeaten_start_date }}<br>
-                        Do: {{ longest_unbeaten_end_date }}
+                        Maksymalna: <span class="stat-value">{{ longest_unbeaten_streak }}</span><br>
+                        Od: <span class="stat-value">{{ longest_unbeaten_start_date or '-' }}</span><br>
+                        Do: <span class="stat-value">{{ longest_unbeaten_end_date or '-' }}</span>
                     </p>
                 </div>
-                {% endif %}
 
-                {% if scoring_streak > 0 %}
                 <div class="analysis-item">
                     <h3>Seria z bramką strzeloną</h3>
                     <p>
-                        {{ scoring_streak }}<br>
-                        Od: {{ longest_scoring_streak_start_date }}<br>
-                        Do: {{ longest_scoring_streak_end_date }}
+                        Maksymalna: <span class="stat-value">{{ scoring_streak }}</span><br>
+                        Od: <span class="stat-value">{{ longest_scoring_streak_start_date or '-' }}</span><br>
+                        Do: <span class="stat-value">{{ longest_scoring_streak_end_date or '-' }}</span>
                     </p>
                 </div>
-                {% endif %}
             
-                {% if clean_sheet_streak > 0 %}
                 <div class="analysis-item">
                     <h3>Seria meczów z czystym kontem</h3>
                     <p>
-                        {{ clean_sheet_streak }}<br>
-                        Od: {{ longest_clean_sheet_streak_start_date }} <br>
-                        Do: {{ longest_clean_sheet_streak_end_date }}
+                        Maksymalna: <span class="stat-value">{{ clean_sheet_streak }}</span><br>
+                        Od: <span class="stat-value">{{ longest_clean_sheet_streak_start_date or '-' }}</span> <br>
+                        Do: <span class="stat-value">{{ longest_clean_sheet_streak_end_date or '-' }}</span>
                     </p>
                 </div>
-                {% endif %}
             
-                {% if winless_streak > 0 %}
                 <div class="analysis-item">
                     <h3>Seria bez zwycięstwa</h3>
                     <p>
-                        {{ winless_streak }}<br>
-                        Od: {{ longest_winless_streak_start_date }} <br>
-                        Do: {{ longest_winless_streak_end_date }}
+                        Maksymalna: <span class="stat-value">{{ winless_streak }}</span><br>
+                        Od: <span class="stat-value">{{ longest_winless_streak_start_date or '-' }}</span> <br>
+                        Do: <span class="stat-value">{{ longest_winless_streak_end_date or '-' }}</span>
                     </p>
                 </div>
-                {% endif %}
                 
-                {% if longest_no_clean_sheet_streak > 0 %}
                 <div class="analysis-item">
                     <h3>Seria meczów bez czystego konta</h3>
                     <p>
-                        {{ longest_no_clean_sheet_streak }}<br>
-                        Od: {{ longest_no_clean_sheet_streak_start_date }}<br>
-                        Do: {{ longest_no_clean_sheet_streak_end_date }}
+                        Maksymalna: <span class="stat-value">{{ longest_no_clean_sheet_streak }}</span><br>
+                        Od: <span class="stat-value">{{ longest_no_clean_sheet_streak_start_date or '-' }}</span><br>
+                        Do: <span class="stat-value">{{ longest_no_clean_sheet_streak_end_date or '-' }}</span>
                     </p>
                 </div>
-                {% endif %}
                 
+                <div class="analysis-item">
+                    <h3>Najwyższe Zwycięstwo / Porażka</h3>
+                    <p>
+                        Zwycięstwo: {% if biggest_win_match %}<span class="stat-value">{{ biggest_win_match['Wynik'] }}</span> vs {{ biggest_win_match['Przeciwnik'] }} (<span class="stat-value">{{ biggest_win_match['Sezon'] }}</span>){% else %}-{% endif %}<br>
+                        Porażka: {% if biggest_loss_match %}<span class="stat-value">{{ biggest_loss_match['Wynik'] }}</span> vs {{ biggest_loss_match['Przeciwnik'] }} (<span class="stat-value">{{ biggest_loss_match['Sezon'] }}</span>){% else %}-{% endif %}
+                    </p>
+                </div>
+
+                <div class="analysis-item">
+                    <h3>Najczęstszy Wynik</h3>
+                    <p>
+                        Łącznie: <span class="stat-value">{{ most_common_score_total or '-' }}</span> {% if most_common_score_total_count %}<span style="white-space: nowrap;">(<span class="stat-value">{{ most_common_score_total_count }}</span> razy)</span>{% endif %}<br>
+                        Dom: <span class="stat-value">{{ most_common_score_home or '-' }}</span> {% if most_common_score_home_count %}<span style="white-space: nowrap;">(<span class="stat-value">{{ most_common_score_home_count }}</span> razy)</span>{% endif %}<br>
+                        Wyjazd: <span class="stat-value">{{ most_common_score_away or '-' }}</span> {% if most_common_score_away_count %}<span style="white-space: nowrap;">(<span class="stat-value">{{ most_common_score_away_count }}</span> razy)</span>{% endif %}
+                    </p>
+                </div>
+
+                <div class="analysis-item">
+                    <h3>Ulubiony / Najgorszy Rywal</h3>
+                    <p>
+                        Ulubiony: {% if best_opponent %}{{ best_opponent }} <span style="white-space: nowrap;">(<span class="stat-value">{{ best_opponent_stats['wins'] }}</span> W, bilans <span class="stat-value">{% set best_diff = best_opponent_stats['goals_scored'] - best_opponent_stats['goals_conceded'] %}{% if best_diff > 0 %}+{% endif %}{{ best_diff }}</span>)</span>{% else %}-{% endif %}<br>
+                        Najgorszy: {% if worst_opponent %}{{ worst_opponent }} <span style="white-space: nowrap;">(<span class="stat-value">{{ worst_opponent_stats['losses'] }}</span> P, bilans <span class="stat-value">{% set worst_diff = worst_opponent_stats['goals_scored'] - worst_opponent_stats['goals_conceded'] %}{% if worst_diff > 0 %}+{% endif %}{{ worst_diff }}</span>)</span>{% else %}-{% endif %}
+                    </p>
+                </div>
             </div>
         </div>
 
-        <!-- Menu Bar Section -->
-        <div class="menu-bar">
-            <ul>
-                <li><a href="/">Strona Główna</a></li>
-                <li><a href="/results">Wszystkie mecze</a></li>
-                <li><a href="/export_all_xls">Eksportuj Wszystko</a></li>
-                <li><a href="https://bilety.arka.gdynia.pl/login" target="_blank">Kup bilet</a></li>
-            </ul>
-        </div>
+
     </div>
 </div>
 
@@ -289,6 +302,7 @@
     <table>
         <thead>
             <tr>
+                <th class="col-checkbox"><input type="checkbox" id="select-all-checkbox" title="Zaznacz wszystkie na tej stronie"></th>
                 <th>#</th>
                 <th>Sezon</th>
                 <th>Kolejka</th>
@@ -312,7 +326,8 @@
         </thead>
         <tbody>
             {% for match in matches %}
-            <tr>
+            <tr data-match-id="{{ match['Id'] }}">
+                <td class="col-checkbox"><input type="checkbox" class="match-checkbox" value="{{ match['Id'] }}"></td>
                 <td>{{ loop.index }}</td>
                 <td><a href="/results?season={{ match['Sezon'] }}">{{ match['Sezon'] }}</a></td>
                 <td><a href="/results?kolejka={{ match['Kolejka'] }}">{{ match['Kolejka'] }}</a></td>
@@ -323,7 +338,19 @@
                 <td><a href="/results?opponent={{ match['Przeciwnik'] }}">{{ match['Przeciwnik'] }}</a></td>
                 <td><a href="/results?result={{ match['Wynik'] }}">{{ match['Wynik'] }}</a></td>
                 {% if column_visibility.get('Strzelcy', True) %}
-                <td>{{ match['Strzelcy'] }}</td>
+                <td>
+                    {% if match['Strzelcy'] %}
+                        {% for token in process_scorers_html(match['Strzelcy']) -%}
+                            {%- if token.type == 'player' -%}
+                                <a href="{{ token.url }}" class="player-link">{{ token.text }}</a>
+                            {%- elif token.type == 'minute' -%}
+                                <a href="{{ token.url }}" class="minute-link">{{ token.text }}</a>
+                            {%- else -%}
+                                <span>{{ token.text }}</span>
+                            {%- endif -%}
+                        {%- endfor %}
+                    {% endif %}
+                </td>
                 {% endif %}
                 {% if column_visibility.get('Frekwencja', True) %}
                 <td>
@@ -335,7 +362,11 @@
                 </td>
                 {% endif %}
                 {% if column_visibility.get('Sedzia', True) %}
-                <td>{{ match['sedzia'] if match['sedzia'] else '' }}</td>
+                <td>
+                    {% if match['sedzia'] %}
+                        <a href="/results?referee={{ match['sedzia'] }}">{{ match['sedzia'] }}</a>
+                    {% endif %}
+                </td>
                 {% endif %}
                 <td style="text-align: center;">
                     <!-- Button linking to match details -->
@@ -348,21 +379,149 @@
 </div>
 
 <form action="/export_xls" method="get">
-    <input type="hidden" name="season" value="{{ current_filters.get('season', '') }}">
-    <input type="hidden" name="opponent" value="{{ current_filters.get('opponent', '') }}">
-    <input type="hidden" name="league" value="{{ current_filters.get('league', '') }}">
-    <input type="hidden" name="place" value="{{ current_filters.get('place', '') }}">
-    <input type="hidden" name="date" value="{{ current_filters.get('date', '') }}">
-    <input type="hidden" name="from_date" value="{{ current_filters.get('from_date', '') }}">
-    <input type="hidden" name="to_date" value="{{ current_filters.get('to_date', '') }}">
-    <input type="hidden" name="wynik" value="{{ current_filters.get('wynik', '') }}">
-    <input type="hidden" name="scorer" value="{{ current_filters.get('scorer', '') }}">
-    <input type="hidden" name="kolejka" value="{{ current_filters.get('kolejka', '') }}">
-    <input type="hidden" name="rok" value="{{ current_filters.get('rok', '') }}">
-    <input type="hidden" name="result" value="{{ current_filters.get('result', '') }}">
-    <input type="hidden" name="referee" value="{{ current_filters.get('referee', '') }}">
+    {% if is_selected_view | default(false) %}
+        <input type="hidden" name="selected_ids" value="{% for m in matches %}{{ m['Id'] }}{% if not loop.last %},{% endif %}{% endfor %}">
+    {% else %}
+        <input type="hidden" name="season" value="{{ current_filters.get('season', '') }}">
+        <input type="hidden" name="opponent" value="{{ current_filters.get('opponent', '') }}">
+        <input type="hidden" name="league" value="{{ current_filters.get('league', '') }}">
+        <input type="hidden" name="place" value="{{ current_filters.get('place', '') }}">
+        <input type="hidden" name="date" value="{{ current_filters.get('date', '') }}">
+        <input type="hidden" name="from_date" value="{{ current_filters.get('from_date', '') }}">
+        <input type="hidden" name="to_date" value="{{ current_filters.get('to_date', '') }}">
+        <input type="hidden" name="wynik" value="{{ current_filters.get('wynik', '') }}">
+        <input type="hidden" name="scorer" value="{{ current_filters.get('scorer', '') }}">
+        <input type="hidden" name="kolejka" value="{{ current_filters.get('kolejka', '') }}">
+        <input type="hidden" name="rok" value="{{ current_filters.get('rok', '') }}">
+        <input type="hidden" name="result" value="{{ current_filters.get('result', '') }}">
+        <input type="hidden" name="referee" value="{{ current_filters.get('referee', '') }}">
+        <input type="hidden" name="player" value="{{ current_filters.get('player', '') }}">
+        <input type="hidden" name="goal_minute" value="{{ current_filters.get('goal_minute', '') }}">
+    {% endif %}
     <button type="submit">Eksportuj do XLS</button>
 </form>
+<br>
+
+<!-- Selection Toolbar -->
+<div id="selection-bar" class="selection-bar" style="display: none;">
+    <div class="selection-bar-inner">
+        <span class="selection-info">
+            ⭐ Zaznaczono: <strong id="selection-count">0</strong> meczów
+        </span>
+        <div class="selection-actions">
+            <button type="button" id="clear-selected-btn" class="selection-btn selection-btn-clear">
+                Usuń zaznaczenia
+            </button>
+            <button type="button" id="show-selected-btn" class="selection-btn selection-btn-show">
+                Pokaż zaznaczone
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+(function() {
+    // Load selections from localStorage
+    var selected = JSON.parse(localStorage.getItem('selectedMatches') || '[]');
+    var selectAllCb = document.getElementById('select-all-checkbox');
+
+    // Restore checkboxes on page load
+    document.querySelectorAll('.match-checkbox').forEach(function(cb) {
+        var id = parseInt(cb.value);
+        if (selected.indexOf(id) !== -1) {
+            cb.checked = true;
+            cb.closest('tr').classList.add('match-selected');
+        }
+    });
+    updateCounter();
+    updateSelectAllState();
+
+    // Individual checkbox change
+    document.addEventListener('change', function(e) {
+        if (!e.target.classList.contains('match-checkbox')) return;
+        var id = parseInt(e.target.value);
+        if (e.target.checked) {
+            if (selected.indexOf(id) === -1) selected.push(id);
+            e.target.closest('tr').classList.add('match-selected');
+        } else {
+            selected = selected.filter(function(x) { return x !== id; });
+            e.target.closest('tr').classList.remove('match-selected');
+        }
+        save();
+        updateSelectAllState();
+    });
+
+    // Select-all checkbox
+    if (selectAllCb) {
+        selectAllCb.addEventListener('change', function() {
+            var checked = selectAllCb.checked;
+            document.querySelectorAll('.match-checkbox').forEach(function(cb) {
+                var id = parseInt(cb.value);
+                cb.checked = checked;
+                if (checked) {
+                    if (selected.indexOf(id) === -1) selected.push(id);
+                    cb.closest('tr').classList.add('match-selected');
+                } else {
+                    selected = selected.filter(function(x) { return x !== id; });
+                    cb.closest('tr').classList.remove('match-selected');
+                }
+            });
+            save();
+        });
+    }
+
+    // Show Selected button
+    document.getElementById('show-selected-btn').addEventListener('click', function() {
+        if (selected.length === 0) {
+            alert('Nie zaznaczono żadnych meczów.');
+            return;
+        }
+        var form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '/results/selected';
+        var input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = 'selected_ids';
+        input.value = selected.join(',');
+        form.appendChild(input);
+        document.body.appendChild(form);
+        form.submit();
+    });
+
+    // Clear Selection button
+    document.getElementById('clear-selected-btn').addEventListener('click', function() {
+        if (selected.length === 0) return;
+        if (!confirm('Czy na pewno chcesz usunąć wszystkie zaznaczenia? (' + selected.length + ' meczów)')) return;
+        selected = [];
+        save();
+        document.querySelectorAll('.match-checkbox').forEach(function(cb) {
+            cb.checked = false;
+            cb.closest('tr').classList.remove('match-selected');
+        });
+        if (selectAllCb) selectAllCb.checked = false;
+    });
+
+    function save() {
+        localStorage.setItem('selectedMatches', JSON.stringify(selected));
+        updateCounter();
+    }
+
+    function updateCounter() {
+        var counterEl = document.getElementById('selection-count');
+        var barEl = document.getElementById('selection-bar');
+        if (counterEl) counterEl.textContent = selected.length;
+        if (barEl) barEl.style.display = selected.length > 0 ? 'block' : 'none';
+    }
+
+    function updateSelectAllState() {
+        if (!selectAllCb) return;
+        var boxes = document.querySelectorAll('.match-checkbox');
+        var checkedBoxes = document.querySelectorAll('.match-checkbox:checked');
+        selectAllCb.checked = boxes.length > 0 && boxes.length === checkedBoxes.length;
+        selectAllCb.indeterminate = checkedBoxes.length > 0 && checkedBoxes.length < boxes.length;
+    }
+})();
+</script>
 <br>
 
 

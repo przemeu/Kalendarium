@@ -46,8 +46,16 @@
             </select>
         </div>
         <div class="form-group">
+            <label for="result">Dokładny wynik:</label>
+            <input type="text" name="result" id="result" placeholder="np. 1:1 lub 1-1" value="{{ request.args.get('result', '') }}">
+        </div>
+        <div class="form-group">
             <label for="scorer">Strzelec:</label>
             <input type="text" name="scorer" id="scorer" placeholder="Wpisz nazwisko" value="{{ request.args.get('scorer', '') }}">
+        </div>
+        <div class="form-group">
+            <label for="kolejka">Kolejka:</label>
+            <input type="text" name="kolejka" id="kolejka" placeholder="Kolejka np. 1, 3, 7 lub 21-34" value="{{ request.args.get('kolejka', '') }}">
         </div>
         <div class="form-group">
             <label for="place">Miejsce:</label>

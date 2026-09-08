@@ -34,16 +34,26 @@ Thumbs.db
 *.exe
 *.dll
 *.def
+*.bak
 kronika.xlsx
 *.txt
 *.csv
 *.xml
 iTpRPUA_*.png*
+match.html
+page.html
+stal_table.html
+insert_matches.py
+app_simple.py
+requirements_simple.txt
 
 # Directories we don't need in Git
 0512more/
 d/
 Socios/
+scratch/
+.claude/
+.vs/
 
 # Keep important files
 !CLAUDE.md
