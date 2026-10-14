@@ -34,7 +34,7 @@ Thumbs.db
 *.exe
 *.dll
 *.def
-*.bak
+*.bak*
 kronika.xlsx
 *.txt
 *.csv
